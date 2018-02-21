@@ -13,7 +13,7 @@ def handle_verification():
     if request.args.get('hub.verify_token', '') == VERIFY_TOKEN:
         return request.args.get('hub.challenge', 200)
     else:
-        return 'Error, wrong validation token'
+        return 'Error, wrong validation token lol'
 
 
 @app.route('/', methods=['POST'])
