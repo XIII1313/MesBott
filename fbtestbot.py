@@ -5,20 +5,45 @@ import os
 import json
 from Credentials import *
 
+
+# ____________________________________________________________________
+# price getter
+# prep
 import urllib.request, json
 URL = "https://api.coinmarketcap.com/v1/ticker/?limit=300"
 
 with urllib.request.urlopen(URL) as url:
     s = url.read()
-    
-    data = json.loads(s)
+data = json.loads(s)
 
-app = Flask(__name__)
+portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49], ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18], ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0], ['TRX', 500.0]]
 
 
+
+
+# defs
+def refreshPrices():
+    with urllib.request.urlopen(URL) as url:
+        global s, data
+        s = url.read()
+        data = json.loads(s)
+        
 def getCoinUSDPrice(ticker):
     coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
     return (coin_info[u'price_usd'])
+
+def getCoinList():
+    coinList = []
+    for coinDetails in data:
+        coinName = coinDetails[u'symbol']
+        coinList += [coinName]
+    return coinList
+
+
+
+# _______________________________________________________________________
+# messenger bot
+app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def handle_verification():
@@ -43,23 +68,14 @@ def handle_messages():
                     recipient_id = messaging_event["recipient"]["id"]
                     message_text = messaging_event["message"]["text"]
                         
-                    if message_text == 'x':
-                        send_message(sender_id, "if event was triggered")
-                        
-                        
-                    elif message_text == 'BTC':
-                        message = getCoinUSDPrice('BTC')
+                    if message_text in getCoinList():
+                        refreshPrices()
+                        botReply = getCoinUSDPrice(message_text)
                         send_message(sender_id, message)
                         send_message(sender_id, 'confirm')
                     
-                    elif message_text == 1:
-                        send_message(sender_id, "integer is recieved")
-                        
-                    elif message_text == "2":
-                        send_message(sender_id, 7357)
-                   
                     else:
-                        send_message(sender_id, message_text)
+                        send_message(sender_id, 'Coin not found, try again.')
 
                 if messaging_event.get("delivery"):
                     pass
