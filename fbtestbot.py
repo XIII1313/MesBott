@@ -5,8 +5,20 @@ import os
 import json
 from Credentials import *
 
+import urllib.request, json
+URL = "https://api.coinmarketcap.com/v1/ticker/?limit=300"
+
+with urllib.request.urlopen(URL) as url:
+    s = url.read()
+    
+    data = json.loads(s)
+
 app = Flask(__name__)
 
+
+def getCoinUSDPrice(ticker):
+    coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
+    return (coin_info[u'price_usd'])
 
 @app.route('/', methods=['GET'])
 def handle_verification():
@@ -34,6 +46,12 @@ def handle_messages():
                     if message_text == 'x':
                         send_message(sender_id, "if event was triggered")
                         
+                        
+                    elif message_text == 'BTC':
+                        message = getCoinUSDPrice('BTC')
+                        send_message(sender_id, message)
+                        send_message(sender_id, 'confirm')
+                    
                     elif message_text == 1:
                         send_message(sender_id, "integer is recieved")
                         
