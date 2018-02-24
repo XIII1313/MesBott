@@ -68,13 +68,19 @@ def handle_messages():
                     recipient_id = messaging_event["recipient"]["id"]
                     message_text = messaging_event["message"]["text"]
                         
+                    send_message(sender_id, 'confirmation 1')
+                    
                     if message_text in getCoinList():
+                        send_message(sender_id, 'confirmation 2')
                         refreshPrices()
+                        send_message(sender_id, 'confirmation 3')
                         botReply = getCoinUSDPrice(message_text)
-                        send_message(sender_id, message)
-                        send_message(sender_id, 'confirm')
+                        send_message(sender_id, 'confirmation 4')
+                        send_message(sender_id, botReply)
+                        send_message(sender_id, 'confirmation 5')
                     
                     else:
+                        send_message(sender_id, 'confirmation 6')
                         send_message(sender_id, 'Coin not found, try again.')
 
                 if messaging_event.get("delivery"):
