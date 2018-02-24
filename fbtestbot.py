@@ -34,8 +34,11 @@ def handle_messages():
                     if message_text == 'x':
                         send_message(sender_id, "if event was triggered")
                         
-                    elif message_text == '1':
-                        send_message(sender_id, 1)
+                    elif message_text == 1:
+                        send_message(sender_id, "integer is recieved")
+                        
+                    elif message_text == "2":
+                        send_message(sender_id, 7357)
                    
                     else:
                         send_message(sender_id, message_text)
