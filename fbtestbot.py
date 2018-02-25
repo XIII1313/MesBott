@@ -192,7 +192,7 @@ def handle_messages():
                   
                   
                     elif message_text in getCoinList():
-                        botReply = "${}".format(round(float(getCoinUSDPrice(message_text), 2)))
+                        botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
                         send_message(sender_id, botReply)
               
                     
