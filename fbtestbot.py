@@ -7,16 +7,6 @@ from Credentials import *
 
 
 
-#trigger lists 
-
-portfolioUSDTrigger = ["p", "port", "portfolio", "portfolio in usd", "portfolio in USD",
-                       "P", "Port", "Portfolio", "Portfolio in usd", "Portfolio in USD"]
-
-portfolioBTCTrigger = ["p btc", "port btc", "portfolio btc", "p in btc", "port in btc", "portfolio in btc"
-                        "p BTC", "port BTC", "portfolio BTC", "p in BTC", "port in BTC", "portfolio in BTC"
-                        "P btc", "Port btc", "Portfolio btc", "P in btc", "Port in btc", "Portfolio in btc" 
-                        "P BTC", "Port BTC", "Portfolio BTC", "P in BTC", "Port in BTC", "Portfolio in BTC"]
-
 # ____________________________________________________________________
 # price getter
 # prep
@@ -26,7 +16,7 @@ URL = "https://api.coinmarketcap.com/v1/ticker/?limit=300"
 
 with urllib.request.urlopen(URL) as url:
     s = url.read()
-data = json.loads(s
+data = json.loads(s)
 
 portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49], ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18], ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0], ['TRX', 500.0]]
 
@@ -48,12 +38,6 @@ def getCoinUSDPrice(ticker):
 
 
 
-def getCoinBTCPrice(ticker):
-    coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
-    return (coin_info[u'price_btc'])
-
-
-
 def getCoinList():
     coinList = []
     for coinDetails in data:
@@ -63,7 +47,7 @@ def getCoinList():
 
 
 
-def coin1ToCoin2(message_text): 
+def coin1ToCoin2(message_text):
 #
 # input: "10 VEN to NEO"
 # output: "With 10 you can buy x amount of NEO"
@@ -87,30 +71,6 @@ def coin1ToUSD(message):
     amountOfUSD = float(getCoinUSDPrice(coin1)) * float(amountOfCoin1)
     reply = "{} {} is ${}.".format(amountOfCoin1, coin1, round(amountOfUSD, 2))
     return reply
-
-
-
-def getPortfolioUSDPrice(portfoliolist):
-    portfolioUSDValue = 0.0
-    for sublist in portfoliolist:
-
-        totalCoinValue = float(getCoinUSDPrice(sublist[0])) * sublist[1]
-        portfolioUSDValue += totalCoinValue
-
-    return round(portfolioUSDValue, 2)
-
-
-
-def getPortfolioBTCPrice(portfoliolist):
-
-    portfolioBTCValue = 0.0
-
-    for sublist in portfoliolist:
-
-        totalCoinValue = float(getCoinBTCPrice(sublist[0])) * sublist[1]
-        portfolioBTCValue += totalCoinValue
-
-    return round(portfolioBTCValue, 8)
 
 
 
@@ -179,34 +139,17 @@ def handle_messages():
 
                             
                             
-                    elif message_text in portfolioUSDTrigger:
-                        botReply = getPortfolioUSDPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
-                            
-                  
-                  
-                    elif message_text in portfolioBTCTrigger:
-                        botReply = getPortfolioBTCPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
-                  
-                  
-                  
                     elif message_text in getCoinList():
-                        botReply = "${}".format(round(float(getCoinUSDPrice(message_text), 2)))
+                        botReply = "${}".format(getCoinUSDPrice(message_text))
                         send_message(sender_id, botReply)
               
                     
                 
                     else:
-                        send_message(sender_id, "Sorry I didn't get that or maybe your coin isn't on coinmarketcap.")
-                  
-                  
+                        send_message(sender_id, "Sorry I didn't get that.")
                         
 #_____________________________________________________________________________ 
 
-                  
-                  
-                  
                 if messaging_event.get("delivery"):
                     pass
 
