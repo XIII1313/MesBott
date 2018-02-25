@@ -6,9 +6,11 @@ import json
 from Credentials import *
 
 
+
 # ____________________________________________________________________
 # price getter
 # prep
+
 import urllib.request, json
 URL = "https://api.coinmarketcap.com/v1/ticker/?limit=300"
 
@@ -20,17 +22,21 @@ portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895],
 
 
 
-
-# defs
+# _____________________________________________________________________
+# defs for API
 def refreshPrices():
     with urllib.request.urlopen(URL) as url:
         global s, data
         s = url.read()
-        data = json.loads(s)
+    data = json.loads(s)
+
         
+
 def getCoinUSDPrice(ticker):
     coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
     return (coin_info[u'price_usd'])
+
+
 
 def getCoinList():
     coinList = []
@@ -41,8 +47,51 @@ def getCoinList():
 
 
 
+def coin1ToCoin2(message_text):
+#
+# input: "10 VEN to NEO"
+# output: "With 10 you can buy x amount of NEO"
+#
+    coin1 = sliceWords(message_text, 1, 2)
+    amountOfCoin1 = sliceWords(message_text, 0, 1)
+    coin2 = sliceWords(message_text, 3, 4)
+    amountOfCoin2 = (float(getCoinUSDPrice(coin1)) * float(amountOfCoin1)) / float(getCoinUSDPrice(coin2))
+    reply = "With {} {} you can buy {} {}.".format(amountOfCoin1, coin1, round(amountOfCoin2, 4), coin2)
+    return reply
+
+
+
+def coin1ToUSD(message):
+#
+# input: "10 VEN to USD"
+# output: "10 VEN is $x"
+#
+    coin1 = sliceWords(message, 1, 2)
+    amountOfCoin1 = sliceWords(message, 0, 1)
+    amountOfUSD = float(getCoinUSDPrice(coin1)) * float(amountOfCoin1)
+    reply = "{} {} is ${}.".format(amountOfCoin1, coin1, round(amountOfUSD, 2))
+    return reply
+
+
+
+# _______________________________________________________________________
+# extra def
+
+def sliceWords(string, beginIndex, endIndex):
+    stringList = string.split()
+    stringList = stringList[beginIndex:endIndex]
+    newString = ""
+    for word in stringList:
+        newString += word
+        newString += " "
+    newString = newString[0: len(newString) - 1]
+    return newString
+
+
+
 # _______________________________________________________________________
 # messenger bot
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
@@ -67,21 +116,39 @@ def handle_messages():
                     sender_id = messaging_event["sender"]["id"]
                     recipient_id = messaging_event["recipient"]["id"]
                     message_text = messaging_event["message"]["text"]
+# ____________________________________________________________________
+                    
+                    refreshPrices()
+                    coinList = getCoinList()
+                
+                
+                
+                    if sliceWords(message_text, 2, 3) == "to":
                         
-                    send_message(sender_id, 'confirmation 1')
-                    
-                    if message_text in getCoinList():
-                        send_message(sender_id, 'confirmation 2')
-                        refreshPrices()
-                        send_message(sender_id, 'confirmation 3')
-                        botReply = getCoinUSDPrice(message_text)
-                        send_message(sender_id, 'confirmation 4')
+                        if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
+                            botReply = coin1ToUSD(message_text)
+                            send_message(sender_id, botReply)
+
+                        elif sliceWords(message_text, 1, 2) in coinList and sliceWords(message_text, 3, 4) in coinList:
+                            botReply = coin1ToCoin2(message_text)
+                            send_message(sender_id, botReply)
+                            
+                        else:
+                            botReply = "Sorry, it seems that a coin is not on coinmarketcap."
+                            send_message(sender_id, botReply)
+
+                            
+                            
+                    elif message_text in getCoinList():
+                        botReply = "${}".format(getCoinUSDPrice(message_text))
                         send_message(sender_id, botReply)
-                        send_message(sender_id, 'confirmation 5')
+              
                     
+                
                     else:
-                        send_message(sender_id, 'confirmation 6')
-                        send_message(sender_id, 'Coin not found, try again.')
+                        send_message(sender_id, "Sorry I didn't get that.")
+                        
+#_____________________________________________________________________________ 
 
                 if messaging_event.get("delivery"):
                     pass
