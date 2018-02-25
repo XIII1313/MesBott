@@ -179,7 +179,7 @@ def handle_messages():
                         
                         if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
                       
-                            if sliceWords(message_text, 0, 1) in coinList:
+                            if sliceWords(message_text, 1, 2) in coinList:
                               botReply = coin1ToUSD(message_text)
                               send_message(sender_id, botReply)
                               
