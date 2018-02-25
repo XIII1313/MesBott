@@ -7,6 +7,16 @@ from Credentials import *
 
 
 
+#trigger lists 
+
+portfolioUSDTrigger = ["p", "port", "portfolio", "portfolio in usd", "portfolio in USD",
+                       "P", "Port", "Portfolio", "Portfolio in usd", "Portfolio in USD"]
+
+portfolioBTCTrigger = ["p btc", "port btc", "portfolio btc", "p in btc", "port in btc", "portfolio in btc"
+                        "p BTC", "port BTC", "portfolio BTC", "p in BTC", "port in BTC", "portfolio in BTC"
+                        "P btc", "Port btc", "Portfolio btc", "P in btc", "Port in btc", "Portfolio in btc" 
+                        "P BTC", "Port BTC", "Portfolio BTC", "P in BTC", "Port in BTC", "Portfolio in BTC"]
+
 # ____________________________________________________________________
 # price getter
 # prep
@@ -38,6 +48,12 @@ def getCoinUSDPrice(ticker):
 
 
 
+def getCoinBTCPrice(ticker):
+    coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
+    return (coin_info[u'price_btc'])
+
+
+
 def getCoinList():
     coinList = []
     for coinDetails in data:
@@ -47,7 +63,7 @@ def getCoinList():
 
 
 
-def coin1ToCoin2(message_text):
+def coin1ToCoin2(message_text): 
 #
 # input: "10 VEN to NEO"
 # output: "With 10 you can buy x amount of NEO"
@@ -71,6 +87,30 @@ def coin1ToUSD(message):
     amountOfUSD = float(getCoinUSDPrice(coin1)) * float(amountOfCoin1)
     reply = "{} {} is ${}.".format(amountOfCoin1, coin1, round(amountOfUSD, 2))
     return reply
+
+
+
+def getPortfolioUSDPrice(portfoliolist):
+    portfolioUSDValue = 0.0
+    for sublist in portfoliolist:
+
+        totalCoinValue = float(getCoinUSDPrice(sublist[0])) * sublist[1]
+        portfolioUSDValue += totalCoinValue
+
+    return round(portfolioUSDValue, 2)
+
+
+
+def getPortfolioBTCPrice(portfoliolist):
+
+    portfolioBTCValue = 0.0
+
+    for sublist in portfoliolist:
+
+        totalCoinValue = float(getCoinBTCPrice(sublist[0])) * sublist[1]
+        portfolioBTCValue += totalCoinValue
+
+    return round(portfolioBTCValue, 8)
 
 
 
@@ -139,17 +179,34 @@ def handle_messages():
 
                             
                             
+                    elif message_text in portfolioUSDTrigger:
+                        botReply = getPortfolioUSDPrice(portfolioList)
+                        send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
+                            
+                  
+                  
+                    elif message_text in portfolioBTCTrigger:
+                        botReply = getPortfolioBTCPrice(portfolioList)
+                        send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
+                  
+                  
+                  
                     elif message_text in getCoinList():
-                        botReply = "${}".format(getCoinUSDPrice(message_text))
+                        botReply = "${}".format(round(float(getCoinUSDPrice(message_text), 2)))
                         send_message(sender_id, botReply)
               
                     
                 
                     else:
-                        send_message(sender_id, "Sorry I didn't get that.")
+                        send_message(sender_id, "Sorry I didn't get that or maybe your coin isn't on coinmarketcap.")
+                  
+                  
                         
 #_____________________________________________________________________________ 
 
+                  
+                  
+                  
                 if messaging_event.get("delivery"):
                     pass
 
