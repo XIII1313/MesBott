@@ -17,6 +17,12 @@ portfolioBTCTrigger = ["p btc", "port btc", "portfolio btc", "p in btc", "port i
                         "P btc", "Port btc", "Portfolio btc", "P in btc", "Port in btc", "Portfolio in btc" 
                         "P BTC", "Port BTC", "Portfolio BTC", "P in BTC", "Port in BTC", "Portfolio in BTC"]
 
+cmcLinkTriggerOne = ["cmc", "coinmarketcap",
+                    "Cmc", "Coinmarketcap"]
+
+cmcLinkTriggerTwo = ["cmc of", "coinmarketcap of",
+                    "Cmc of", "Coinmarketcap of"]
+
 # ____________________________________________________________________
 # price getter
 # prep
@@ -51,6 +57,12 @@ def getCoinUSDPrice(ticker):
 def getCoinBTCPrice(ticker):
     coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
     return (coin_info[u'price_btc'])
+  
+  
+  
+def getCoinID(ticker):
+    coin_info = next(coin for coin in data if coin[u'symbol'] == ticker)
+    return (coin_info[u'id'])
 
 
 
@@ -193,6 +205,20 @@ def handle_messages():
                   
                     elif message_text in getCoinList():
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
+                        send_message(sender_id, botReply)
+                    
+                    
+                    
+                    elif sliceWords(message_text, 0, 2) in cmcLinkTriggerTwo:
+                        inputCoin = sliceWords(message_text, 2, 3)
+                        botReply = "Here is the link to coinmarketcap of {}. Link: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
+                        send_message(sender_id, botReply)
+
+                        
+                        
+                    elif sliceWords(message_text, 0, 1) in cmcLinkTriggerOne:
+                        inputCoin = sliceWords(message_text, 1, 2)
+                        botReply = "Here is the link to coinmarketcap of {}. Link: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
                         send_message(sender_id, botReply)
               
                     
