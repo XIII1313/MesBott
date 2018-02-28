@@ -23,6 +23,12 @@ cmcLinkTriggerOne = ["cmc", "coinmarketcap",
 cmcLinkTriggerTwo = ["cmc of", "coinmarketcap of",
                     "Cmc of", "Coinmarketcap of"]
 
+allInTrigger = ["all in", "all-in",
+                "All in", "All-in"]
+
+# "50% in VEN"
+allInTriggerPercentage = ["%"]
+
 # ____________________________________________________________________
 # price getter
 # prep
@@ -138,6 +144,21 @@ def sliceWords(string, beginIndex, endIndex):
         newString += " "
     newString = newString[0: len(newString) - 1]
     return newString
+  
+  
+  
+def getStringBeforeCharacter(string, character):
+    substring = ""
+
+    for index in range(len(string)):
+
+        if string[index] == character:
+            break
+
+        else:
+            substring += string[index]
+
+    return substring
 
 
 
