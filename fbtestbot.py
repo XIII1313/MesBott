@@ -23,12 +23,6 @@ cmcLinkTriggerOne = ["cmc", "coinmarketcap",
 cmcLinkTriggerTwo = ["cmc of", "coinmarketcap of",
                     "Cmc of", "Coinmarketcap of"]
 
-allInTrigger = ["all in", "all-in",
-                "All in", "All-in"]
-
-# "50% in VEN"
-allInTriggerPercentage = ["%"]
-
 # ____________________________________________________________________
 # price getter
 # prep
@@ -40,8 +34,6 @@ with urllib.request.urlopen(URL) as url:
     s = url.read()
 data = json.loads(s)
 
-
-# var
 portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49], ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18], ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0], ['TRX', 500.0]]
 
 
@@ -134,28 +126,6 @@ def getPortfolioBTCPrice(portfoliolist):
 
 
 
-def allIn(portfolioList, coinTicker):
-    userPortfolio = getPortfolioUSDPrice(portfolioList)
-    coinprice = getCoinUSDPrice(coinTicker)
-    amountOfCoinsIfAllIn = round(float(userPortfolio) / float(coinprice), 4)
-    return [amountOfCoinsIfAllIn, userPortfolio]
-
-
-
-def allInPercent(portfolioList, coinTicker, percentageNumberString):
-    userPortfolio = getPortfolioUSDPrice(portfolioList)
-
-    percentageNumberFloat = float(percentageNumberString)
-    percentage = percentageNumberFloat / 100
-
-    userPortfolioPercentage = userPortfolio * percentage
-
-    coinprice = getCoinUSDPrice(coinTicker)
-    amountOfCoinsIfAllInPercentage = round(float(userPortfolioPercentage) / float(coinprice), 4)
-    return [amountOfCoinsIfAllInPercentage, round(userPortfolioPercentage, 2)]
-
-
-
 # _______________________________________________________________________
 # extra def
 
@@ -168,18 +138,6 @@ def sliceWords(string, beginIndex, endIndex):
         newString += " "
     newString = newString[0: len(newString) - 1]
     return newString
-  
-  
-  
-  def getStringBeforeCharacter(string, character):
-    substring = ""
-    for index in range(len(string)):
-        if string[index] == character:
-            break
-
-        else:
-            substring += string[index]
-    return substring
 
 
 
@@ -240,21 +198,18 @@ def handle_messages():
                             
 # Portfolio usd                            
                     elif message_text in portfolioUSDTrigger:
-    
                         botReply = getPortfolioUSDPrice(portfolioList)
                         send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
                             
                   
 # Portfolio btc                  
                     elif message_text in portfolioBTCTrigger:
-    
                         botReply = getPortfolioBTCPrice(portfolioList)
                         send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
                   
                   
 # Price of coin                  
                     elif message_text in getCoinList():
-    
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
                         send_message(sender_id, botReply)
                     
@@ -272,7 +227,7 @@ def handle_messages():
                         send_message(sender_id, botReply)
 
                         
-# Cmc coin                        
+                        
                     elif sliceWords(message_text, 0, 1) in cmcLinkTriggerOne:
                       
                       if sliceWords(message_text, 1, 2) in coinList:
@@ -282,59 +237,6 @@ def handle_messages():
                         
                       else:
                         botReply = "Oops, it seems like that coin isn't included"
-                        send_message(sender_id, botReply)
-                        
-                        
-# all-in                         
-                    elif sliceWords(message_text, 0, 1) in allInTrigger:
-
-                      inputCoin = sliceWords(message_text, 1, 2)
-
-                      if inputCoin in coinList:
-                        allInList = allIn(portfolioList, inputCoin)
-                        numberOfCoins = allInList[0]
-                        portfolioValue = allInList[1]
-
-                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins, inputCoin, portfolioValue)
-                        send_message(sender_id, botReply)
-
-                      else:
-                        botReply = "It seems that I can't find your coin, sorry."
-                        send_message(sender_id, botReply)
-
-
-# all in
-                    elif sliceWords(message_text, 0, 2) in allInTrigger:
-    
-                      inputCoin = sliceWords(message_text, 2, 3)
-
-                      if inputCoin in coinList:
-                        allInList = allIn(portfolioList, inputCoin)
-                        numberOfCoins = allInList[0]
-                        portfolioValue = allInList[1]
-                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins, inputCoin, portfolioValue)
-                        send_message(sender_id, botReply)
-
-                      else:
-                         botReply = "It seems that I can't find your coin, sorry."
-                         send_message(sender_id, botReply)
-
-
-# x% in coin
-                    elif message_text[1] == "%" or message_text[2] == "%" or message_text[3] == "%":
-    
-                      inputCoin = sliceWords(message_text, -1, None)
-
-                      if inputCoin in coinList:
-                        percentageNumber = getStringBeforeCharacter(message_text, "%")
-                        allInPercentList = allInPercent(portfolioList, inputCoin, percentageNumber)
-                        numberOfCoins = allInPercentList[0]
-                        value = allInPercentList[1]
-                        botReply = "If you would allocate {}% of your portfolio to {}, you would have {} {}. Which is worth ${}".format(percentageNumber, inputCoin, numberOfCoins, inputCoin, value)
-                        send_message(sender_id, botReply)
-
-                      else:
-                        botReply = "It seems that I can't find your coin, sorry."
                         send_message(sender_id, botReply)
               
                     
