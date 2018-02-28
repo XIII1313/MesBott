@@ -167,7 +167,7 @@ def sliceWords(string, beginIndex, endIndex):
     newString = newString[0: len(newString) - 1]
     return newString
   
-  
+
   
 def getStringBeforeCharacter(string, character):
     substring = ""
@@ -293,7 +293,7 @@ def handle_messages():
                         numberOfCoins = allInList[0]
                         portfolioValue = allInList[1]
 
-                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins,                inputCoin, portfolioValue)
+                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins, inputCoin, portfolioValue)
                         send_message(sender_id, botReply)
 
                       else:
@@ -301,6 +301,23 @@ def handle_messages():
                         send_message(sender_id, botReply)
               
                     
+                
+                    elif sliceWords(message_text, 0, 2) in allInTrigger:
+                      inputCoin = sliceWords(message_text, 2, 3)
+
+                      if inputCoin in coinList:
+                        allInList = allIn(portfolioList, inputCoin)
+                        numberOfCoins = allInList[0]
+                        portfolioValue = allInList[1]
+                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins, inputCoin, portfolioValue)
+                        send_message(sender_id, botReply)
+
+                      else:
+                        botReply = "It seems that I can't find your coin, sorry."
+                        send_message(sender_id, botReply)
+                
+                
+                
 # last answer                
                     else:
                         send_message(sender_id, "Sorry I didn't get that or maybe your coin isn't on coinmarketcap.")
