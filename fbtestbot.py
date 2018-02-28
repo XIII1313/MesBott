@@ -270,7 +270,7 @@ def handle_messages():
                         send_message(sender_id, botReply)
 
                         
-                        
+# cmc coin                        
                     elif sliceWords(message_text, 0, 1) in cmcLinkTriggerOne:
                       
                       if sliceWords(message_text, 1, 2) in coinList:
@@ -280,6 +280,24 @@ def handle_messages():
                         
                       else:
                         botReply = "Oops, it seems like that coin isn't included"
+                        send_message(sender_id, botReply)
+                        
+                        
+# all-in                        
+                    elif sliceWords(message_text, 0, 1) in allInTrigger:
+
+                      inputCoin = sliceWords(message_text, 1, 2)
+
+                      if inputCoin in coinList:
+                        allInList = allIn(portfolioList, inputCoin)
+                        numberOfCoins = allInList[0]
+                        portfolioValue = allInList[1]
+
+                        botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins,                inputCoin, portfolioValue)
+                        send_message(sender_id, botReply)
+
+                      else:
+                        botReply = "It seems that I can't find your coin, sorry."
                         send_message(sender_id, botReply)
               
                     
