@@ -129,6 +129,28 @@ def getPortfolioBTCPrice(portfoliolist):
         portfolioBTCValue += totalCoinValue
 
     return round(portfolioBTCValue, 8)
+  
+  
+  
+def allIn(portfoliolist, coinTicker):
+    userPortfolio = getPortfolioUSDPrice(portfoliolist)
+    coinprice = getCoinUSDPrice(coinTicker)
+    amountOfCoinsIfAllIn = round(float(userPortfolio) / float(coinprice), 4)
+    return [amountOfCoinsIfAllIn, userPortfolio]
+
+
+
+def allInPercent(portfoliolist, coinTicker, percentageNumberString):
+    userPortfolio = getPortfolioUSDPrice(portfoliolist)
+
+    percentageNumberFloat = float(percentageNumberString)
+    percentage = percentageNumberFloat / 100
+
+    userPortfolioPercentage = userPortfolio * percentage
+
+    coinprice = getCoinUSDPrice(coinTicker)
+    amountOfCoinsIfAllInPercentage = round(float(userPortfolioPercentage) / float(coinprice), 4)
+    return [amountOfCoinsIfAllInPercentage, round(userPortfolioPercentage, 2)]  
 
 
 
