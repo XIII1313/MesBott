@@ -301,7 +301,7 @@ def handle_messages():
                         send_message(sender_id, botReply)
               
                     
-                
+# all in                
                     elif sliceWords(message_text, 0, 2) in allInTrigger:
                       inputCoin = sliceWords(message_text, 2, 3)
 
@@ -310,6 +310,23 @@ def handle_messages():
                         numberOfCoins = allInList[0]
                         portfolioValue = allInList[1]
                         botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(inputCoin, numberOfCoins, inputCoin, portfolioValue)
+                        send_message(sender_id, botReply)
+
+                      else:
+                        botReply = "It seems that I can't find your coin, sorry."
+                        send_message(sender_id, botReply)
+                
+                
+# all in %                
+                    elif message_text[1] == "%" or message_text[2] == "%" or message_text[3] == "%":
+                      inputCoin = sliceWords(message_text, -1, None)
+
+                      if inputCoin in coinList:
+                        percentageNumber = getStringBeforeCharacter(message_text, "%")
+                        allInPercentList = allInPercent(portfolioList, inputCoin, percentageNumber)
+                        numberOfCoins = allInPercentList[0]
+                        value = allInPercentList[1]
+                        botReply = "If you would allocate {}% of your portfolio to {}, you would have {} {}. Which is worth ${}".format(percentageNumber, inputCoin, numberOfCoins, inputCoin, value)
                         send_message(sender_id, botReply)
 
                       else:
