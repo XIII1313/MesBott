@@ -8,6 +8,13 @@ from Credentials import *
 
 
 #trigger lists 
+coinUSDValueTrigger = ["in USD", "USD price", "USD price of", "to USD", "USD",
+                       "in usd", "usd price", "usd price of", "to usd", "usd",
+                       "Usd price", "Usd price of"]
+
+coinBTCValueTrigger = ["in BTC", "BTC price", "BTC price of", "to BTC", "BTC",
+                       "in btc", "btc price", "btc price of", "to btc", "btc",
+                       "Btc price", "Btc price of"]
 
 portfolioUSDTrigger = ["p", "port", "portfolio", "portfolio in usd", "portfolio in USD",
                        "P", "Port", "Portfolio", "Portfolio in usd", "Portfolio in USD"]
@@ -255,6 +262,50 @@ def handle_messages():
                     elif message_text in getCoinList():
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
                         send_message(sender_id, botReply)
+        
+        
+# BTC price of coin 1        
+                    elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinBTCValueTrigger:
+                        if sliceWords(message_text, -1, None) in coinList:
+                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, -1, None))), 8))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
+
+                          
+# BTC price of coin 2                             
+                    elif sliceWords(message_text, 1, len(message_text.split())) in coinBTCValueTrigger:
+                        if sliceWords(message_text, 0, 1) in coinList:
+                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, 0, 1))), 8))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
+
+                          
+# USD price of coin 1                             
+                    elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinUSDValueTrigger:
+                        if sliceWords(message_text, -1, None) in coinList:
+                          botReply = "${}".format(round(float(getCoinUSDPrice(sliceWords(message_text, -1, None))), 2))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
+
+                          
+# USD price of coin 2                             
+                    elif sliceWords(message_text, 1, len(message_text.split())) in coinUSDValueTrigger:
+                        if sliceWords(message_text, 0, 1) in coinList:
+                          botReply = "${}".format(round(float(getCoinUSDPrice(sliceWords(message_text, 0, 1))), 2))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
                     
                     
 # Cmc of coin                   
