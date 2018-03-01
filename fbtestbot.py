@@ -392,8 +392,8 @@ def handle_messages():
                 
                 
 # test  
-                    elif message_text == "x" or message_text == "X":
-                        botReply = "Hello, \n this is me. \n \n This is still me. \nThis is not me."
+                    elif message_text == "t" or message_text == "T":
+                        botReply = "Hello"
                         send_message(sender_id, botReply)
     
     
