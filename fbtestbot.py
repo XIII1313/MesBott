@@ -391,6 +391,11 @@ def handle_messages():
                         send_message(sender_id, botReply)
                 
                 
+#test
+                    elif message_text == "X":
+                        botReply = "hey"
+                        send_message(sender_id, botReply)
+                
                 
 # last answer                
                     else:
