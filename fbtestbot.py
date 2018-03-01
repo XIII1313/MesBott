@@ -375,7 +375,7 @@ def handle_messages():
                 
                 
 # all in %                
-                    elif "%" in list(message_text)::
+                    elif "%" in list(message_text):
                       inputCoin = sliceWords(message_text, -1, None)
 
                       if inputCoin in coinList:
