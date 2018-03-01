@@ -375,7 +375,7 @@ def handle_messages():
                 
                 
 # all in %                
-                    elif message_text[1] == "%" or message_text[2] == "%" or message_text[3] == "%":
+                    elif "%" in list(message_text)::
                       inputCoin = sliceWords(message_text, -1, None)
 
                       if inputCoin in coinList:
@@ -393,7 +393,7 @@ def handle_messages():
                 
 #test
                     elif message_text == "X":
-                        botReply = "hey"
+                        botReply = "line1 \n line2 \nline3"
                         send_message(sender_id, botReply)
                 
                 
