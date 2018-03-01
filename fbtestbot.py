@@ -391,7 +391,13 @@ def handle_messages():
                         send_message(sender_id, botReply)
                 
                 
-                
+# test  
+                    elif message_text == "x" or message_text == "X":
+                        botReply = "Hello, \n this is me. \n \n This is still me. \nThis is not me."
+                        send_message(sender_id, botReply)
+    
+    
+    
 # last answer                
                     else:
                         send_message(sender_id, "Sorry I didn't get that or maybe your coin isn't on coinmarketcap.")
