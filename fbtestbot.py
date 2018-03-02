@@ -33,6 +33,9 @@ cmcLinkTriggerTwo = ["cmc of", "coinmarketcap of",
 allInTrigger = ["all in", "all-in",
                 "All in", "All-in"]
 
+addressTriger = ["address", "adres", "search address",
+                 "Address", "Adres", "Search address"]
+
 # "50% in VEN"
 allInTriggerPercentage = ["%"]
 
@@ -157,8 +160,40 @@ def allInPercent(portfoliolist, coinTicker, percentageNumberString):
 
     coinprice = getCoinUSDPrice(coinTicker)
     amountOfCoinsIfAllInPercentage = round(float(userPortfolioPercentage) / float(coinprice), 4)
-    return [amountOfCoinsIfAllInPercentage, round(userPortfolioPercentage, 2)]  
+    return [amountOfCoinsIfAllInPercentage, round(userPortfolioPercentage, 2)]
+  
+  
+  
+def addressLinkGiver(addressString):
+    address = sliceWords(addressString, -1, None)
 
+    # NEO
+    if address[0] ==  "A" and len(address) > 10:
+        baseLink = "https://neotracker.io/address/"
+        completeLink =  baseLink + address
+        return [completeLink, "Neo"]
+
+    # LTC
+    elif address[0] ==  "L" and len(address) > 10:
+        baseLink = "https://live.blockcypher.com/ltc/address/"
+        completeLink = baseLink + address + "/"
+        return [completeLink, "Litecoin"]
+
+    # ETH
+    elif address[0:2] ==  "0x" and len(address) > 10:
+        baseLink = "https://etherscan.io/address/"
+        completeLink = baseLink + address
+        return [completeLink, "Ethereum"]
+
+    # BTC
+    elif (address[0] == "1" or address[0] == "3" or address[0:3] == "bc1") and len(address) > 10:
+        baseLink = "https://live.blockcypher.com/btc/address/"
+        completeLink = baseLink + address + "/"
+        return [completeLink, "Bitcoin"]
+
+    else:
+        reply = "Sorry, it seems that this isn't a supported address. At the moment only the addresses of the following blockchains are supported: \n-Bitcoin \n-Ethereum \n-Litecoin \n-Neo"
+        return [reply]
 
 
 # _______________________________________________________________________
@@ -268,28 +303,6 @@ def handle_messages():
                     elif message_text in getCoinList():
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
                         send_message(sender_id, botReply)
-        
-        
-# BTC price of coin 1        
-                    elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinBTCValueTrigger:
-                        if sliceWords(message_text, -1, None) in coinList:
-                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, -1, None))), 8))
-                          send_message(sender_id, botReply)
-
-                        else:
-                          botReply = "Oops, it seems like that coin isn't included"
-                          send_message(sender_id, botReply)
-
-                          
-# BTC price of coin 2                             
-                    elif sliceWords(message_text, 1, len(message_text.split())) in coinBTCValueTrigger:
-                        if sliceWords(message_text, 0, 1) in coinList:
-                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, 0, 1))), 8))
-                          send_message(sender_id, botReply)
-
-                        else:
-                          botReply = "Oops, it seems like that coin isn't included"
-                          send_message(sender_id, botReply)
 
                           
 # USD price of coin 1                             
@@ -319,7 +332,7 @@ def handle_messages():
                         
                       if sliceWords(message_text, 2, 3) in coinList:
                         inputCoin = sliceWords(message_text, 2, 3)
-                        botReply = "Here is the link to coinmarketcap of {}. Link: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
+                        botReply = "Here is the link to coinmarketcap of {}. \n \nLink: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
                         send_message(sender_id, botReply)
                 
                       else:
@@ -332,12 +345,34 @@ def handle_messages():
                       
                       if sliceWords(message_text, 1, 2) in coinList:
                         inputCoin = sliceWords(message_text, 1, 2)
-                        botReply = "Here is the link to coinmarketcap of {}. Link: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
+                        botReply = "Here is the link to coinmarketcap of {}. \n \nLink: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
                         send_message(sender_id, botReply)
                         
                       else:
                         botReply = "Oops, it seems like that coin isn't included"
                         send_message(sender_id, botReply)
+                        
+                        
+# BTC price of coin 1        
+                    elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinBTCValueTrigger:
+                        if sliceWords(message_text, -1, None) in coinList:
+                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, -1, None))), 8))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
+
+                          
+# BTC price of coin 2                             
+                    elif sliceWords(message_text, 1, len(message_text.split())) in coinBTCValueTrigger:
+                        if sliceWords(message_text, 0, 1) in coinList:
+                          botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, 0, 1))), 8))
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
                         
                         
 # all-in                        
@@ -391,10 +426,26 @@ def handle_messages():
                         send_message(sender_id, botReply)
                 
                 
-#test
-                    elif message_text == "X":
-                        botReply = "line1 \n line2 \nline3"
-                        send_message(sender_id, botReply)
+# address search
+                    elif sliceWords(message_text, 0, len(message_text.split()) - 1) in addressTriger:
+                      address = sliceWords(message_text, -1, None)
+                      addressList = addressLinkGiver(address)
+
+                      if len(addressList) == 2:
+                        link = addressList[0]
+                        addressType = addressList[1]
+
+                        if addressType == "Ethereum":
+                          botReply = "This is an {} address. \n \nHere is a link to the address: {}".format(addressType, link)
+                          print(botReply)
+
+                        else:
+                            botReply = "This is a {} address. \n \nHere is a link to the address: {}".format(addressType, link)
+                            print(botReply)
+
+                      elif len(addressList) == 1:
+                        botReply = addressList[0]
+                        print(botReply)
                 
                 
 # last answer                
