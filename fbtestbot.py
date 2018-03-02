@@ -437,15 +437,15 @@ def handle_messages():
 
                         if addressType == "Ethereum":
                           botReply = "This is an {} address. \n \nHere is a link to the address: {}".format(addressType, link)
-                          print(botReply)
+                          send_message(sender_id, botReply)
 
                         else:
                             botReply = "This is a {} address. \n \nHere is a link to the address: {}".format(addressType, link)
-                            print(botReply)
+                            send_message(sender_id, botReply)
 
                       elif len(addressList) == 1:
                         botReply = addressList[0]
-                        print(botReply)
+                        send_message(sender_id, botReply)
                 
                 
 # last answer                
