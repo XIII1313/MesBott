@@ -224,8 +224,26 @@ def getStringBeforeCharacter(string, character):
 
     return substring
 
+  
+  
+def isFloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
 
 
+
+def isInt(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False  
+
+
+      
 # _______________________________________________________________________
 # messenger bot
 
@@ -260,7 +278,7 @@ def handle_messages():
                 
                 
 # x coinName to usd, x coinName1 to coinName 2               
-                    if sliceWords(message_text, 2, 3) == "to" or sliceWords(message_text, 2, 3) == "in":
+                    if (isFloat(sliceWords(message_text, 0, 1)) or isInt(sliceWords(message_text, 0, 1))) and sliceWords(message_text, 2, 3) in ["to", "in"]:
                         
                         if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
                       
@@ -275,6 +293,15 @@ def handle_messages():
                         elif sliceWords(message_text, 1, 2) in coinList and sliceWords(message_text, 3, 4) in coinList:
                             botReply = coin1ToCoin2(message_text)
                             send_message(sender_id, botReply)
+                            
+                        elif sliceWords(message_text, 1, 2) in ['usd', 'USD']:
+                            if sliceWords(message_text, 3, 4) in coinList:
+                              botReply = USDTocoin1(message_text)
+                              send_message(sender_id, botReply)
+
+                            else:
+                              botReply = "Oops, it seems like that coin isn't included"
+                              send_message(sender_id, botReply)
                             
                         else:
                             botReply = "Sorry, it seems that a coin is not on coinmarketcap."
