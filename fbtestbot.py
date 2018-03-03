@@ -115,6 +115,19 @@ def coin1ToUSD(message):
     amountOfUSD = float(getCoinUSDPrice(coin1)) * float(amountOfCoin1)
     reply = "{} {} is ${}.".format(amountOfCoin1, coin1, round(amountOfUSD, 2))
     return reply
+  
+  
+  
+def USDTocoin1(message):
+#
+# input: "10 USD to VEN"
+# output: "10 USD is x VEN"
+#
+    coin1 = sliceWords(message, 3, 4)
+    amountOfUSD = sliceWords(message, 0, 1)
+    amountOfCoin1 = float(amountOfUSD) / float(getCoinUSDPrice(coin1))
+    reply = "${} is {} {}.".format(amountOfUSD, round(amountOfCoin1, 8), coin1)
+    return reply
 
 
 
