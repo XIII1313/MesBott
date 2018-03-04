@@ -39,6 +39,22 @@ addressTriger = ["address", "adres", "search address",
 # "50% in VEN"
 allInTriggerPercentage = ["%"]
 
+quick_replies_list = [{
+    "content_type":"text",
+    "title":"BTC",
+    "payload":"btc",
+},
+{
+    "content_type":"text",
+    "title":"VEN",
+    "payload":"VEN",
+},
+{
+    "content_type":"text",
+    "title":"Portfolio",
+    "payload":"Portfolio",
+}]
+
 # ____________________________________________________________________
 # price getter
 # prep
@@ -525,7 +541,8 @@ def send_message(recipient_id, message_text):
             "id": recipient_id
         },
         "message": {
-            "text": message_text
+            "text": message_text,
+            "quick_replies":quick_replies_list
         }
     })
     r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=params, headers=headers, data=data)
