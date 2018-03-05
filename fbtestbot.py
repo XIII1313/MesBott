@@ -36,24 +36,13 @@ allInTrigger = ["all in", "all-in",
 addressTriger = ["address", "adres", "search address",
                  "Address", "Adres", "Search address"]
 
-# "50% in VEN"
 allInTriggerPercentage = ["%"]
 
-quick_replies_list = [{
-    "content_type":"text",
-    "title":"BTC",
-    "payload":"btc",
-},
-{
-    "content_type":"text",
-    "title":"VEN",
-    "payload":"VEN",
-},
-{
-    "content_type":"text",
-    "title":"Portfolio",
-    "payload":"Portfolio",
-}]
+deleteQuickReplyTrigger = ["delete quick reply", "del q r",
+                           "Delete quick reply", "Del q r"]
+
+addQuickReplyTrigger = ["add quick reply", "add q r",
+                        "Add quick reply", "Add q r"]
 
 # ____________________________________________________________________
 # price getter
@@ -66,9 +55,35 @@ with urllib.request.urlopen(URL) as url:
     s = url.read()
 data = json.loads(s)
 
+# var
 portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49], ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18], ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0], ['TRX', 500.0]]
 
-
+quick_replies_list = [{
+    "content_type":"text",
+    "title":"BTC",
+    "payload":"btc",
+},
+{
+    "content_type":"text",
+    "title":"WTC",
+    "payload":"WTC",
+},
+{
+    "content_type":"text",
+    "title":"Portfolio",
+    "payload":"Portfolio",
+},
+{
+    "content_type":"text",
+    "title":"donate",
+    "payload":"donate",
+},
+{
+    "content_type": "text",
+    "title": "help",
+    "payload": "help",
+}
+]
 
 # _____________________________________________________________________
 # defs for API
@@ -272,10 +287,65 @@ def isInt(value):
         return False  
       
       
-      
-def slideObjectInList(newObject, oldList, index = 1):
-    oldList.pop(index)
-    oldList.insert(0, newObject)
+
+def slideObjectInList(newObject, oldList, index = 2):
+    if newObject in oldList[0:3]:
+        None
+    else:
+        oldList.pop(index)
+        oldList.insert(0, newObject)
+
+
+
+def createQuickReplyWithGivenText(quickreplytext):
+    quickreply = {
+    "content_type":"text",
+    "title":quickreplytext,
+    "payload":quickreplytext,
+    }
+    return quickreply
+
+
+
+def addQuickReply(quickreply, quickreplylist):
+    if len(quickreplylist) == 11:
+        return "You have created the max amount of quick replies. You will need to delete a quick reply by typing 'delete quick reply' and the text of the quick reply."
+
+    elif quickreply in quickreplylist[3:]:
+        return "You already have this quick reply."
+
+    else:
+        quickreplylist.insert(3, quickreply)
+        return "I added that quick reply."
+
+
+
+def deleteQuickReply(quickreply, quickreplylist):
+    counter = 0
+    
+    if len(quickreplylist) == 5:
+        return "You don't have any quick replies to delete. You can't delete default quick replies."
+
+    else:
+        lengthOfOldList = len(quickreplylist)
+        for index in range(lengthOfOldList - 2):
+
+            if index in [0,1,2]:
+                None
+
+            else:
+                if quickreplylist[index] == quickreply:
+                    quickreplylist.pop(index)
+                    break
+
+                else:
+                    counter += 1
+
+        if counter == lengthOfOldList - 5:
+            return "It seems that you haven't made this quick reply yet. \nRemember that you can't delete default quick replies."
+
+        else:
+            return "I deleted that quick reply."
 
 
       
@@ -510,18 +580,21 @@ def handle_messages():
                         send_message(sender_id, botReply)
                         
                         
-# test
-                    elif len(message_text) == 1:
-                      newQuickReply = {
-                      "content_type":"text", 
-                      "title":message_text, 
-                      "payload":message_text,
-                      }
-                      slideObjectInList(newQuickReply, quick_replies_list)
-                      botReply = "recieved"
+# add quick reply
+                    elif sliceWords(message_text, 0, 3) in addQuickReplyTrigger:
+                      textOfQuickReply = sliceWords(message_text, 3, None)
+                      quickReply = createQuickReplyWithGivenText(textOfQuickReply)
+                      botReply = addQuickReply(quickReply, quick_replies_list)
+                      send_message(sender_id, botReply)
+
+
+# delete quick reply
+                    elif sliceWords(message_text, 0, 3) in deleteQuickReplyTrigger:
+                      textOfQuickReply = sliceWords(message_text, 3, None)
+                      quickReply = createQuickReplyWithGivenText(textOfQuickReply)
+                      botReply = deleteQuickReply(quickReply, quick_replies_list)
                       send_message(sender_id, botReply)
                       
-                
                 
 # last answer                
                     else:
