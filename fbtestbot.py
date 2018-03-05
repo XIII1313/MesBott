@@ -502,6 +502,16 @@ def handle_messages():
                       elif len(addressList) == 1:
                         botReply = addressList[0]
                         send_message(sender_id, botReply)
+                        
+                    elif message_text == "X":
+                      quick_replies_list[0] = {
+                      "content_type":"text",
+                      "title":"X",
+                      "payload":"X",
+                      }
+                      botReply = "recieved"
+                      send_message(sender_id, botReply)
+                      
                 
                 
 # last answer                
