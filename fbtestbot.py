@@ -509,9 +509,11 @@ def handle_messages():
                         botReply = addressList[0]
                         send_message(sender_id, botReply)
                         
+                        
+# test
                     elif len(message_text) == 1:
                       newQuickReply = {
-                      "content_type":"text, 
+                      "content_type":"text", 
                       "title":message_text, 
                       "payload":message_text,
                       }
