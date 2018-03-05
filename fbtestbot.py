@@ -270,6 +270,12 @@ def isInt(value):
         return True
     except ValueError:
         return False  
+      
+      
+      
+def slideObjectInList(newObject, oldList, index = 1):
+    oldList.pop(index)
+    oldList.insert(0, newObject)
 
 
       
@@ -503,12 +509,13 @@ def handle_messages():
                         botReply = addressList[0]
                         send_message(sender_id, botReply)
                         
-                    elif message_text == "X":
-                      quick_replies_list[0] = {
-                      "content_type":"text",
-                      "title":"X",
-                      "payload":"X",
+                    elif len(message_text) == 1:
+                      newQuickReply = {
+                      "content_type":"text, 
+                      "title":message_text, 
+                      "payload":message_text,
                       }
+                      slideObjectInList(newQuickReply, quick_replies_list)
                       botReply = "recieved"
                       send_message(sender_id, botReply)
                       
