@@ -289,7 +289,7 @@ def isInt(value):
       
 
 def slideObjectInList(newObject, oldList, index = 2):
-    if newObject in oldList[0:3]:
+    if newObject in oldList:
         None
     else:
         oldList.pop(index)
