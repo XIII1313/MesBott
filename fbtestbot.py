@@ -48,6 +48,9 @@ addQuickReplyTrigger = ["add quick reply", "add q r",
 helloTrigger = ["hey", "hello", "hi",
                "Hey", "Hello", "Hi"]
 
+donateTriggers = ["donate", "donation",
+                  "Donate", "Donation"]
+
 
 
 # outputs
@@ -493,7 +496,29 @@ def handle_messages():
                           botReply = "Oops, it seems like that coin isn't included"
                           send_message(sender_id, botReply)
                     
-                    
+                           
+# x coinname
+                    elif len(message_text.split()) == 2 and isFloat(sliceWords(message_text, 0, 1)):
+
+                        inputCoin = sliceWords(message_text, 1, 2)
+
+                        if inputCoin in coinList:
+                          amountOfCoin = sliceWords(message_text, 0, 1)
+                          totalUSDValue = float(getCoinUSDPrice(inputCoin)) * float(amountOfCoin)
+                          botReply = "{} {} = ${}.".format(amountOfCoin, inputCoin, totalUSDValue)
+                          send_message(sender_id, botReply)
+
+                        elif inputCoin.upper() in coinList:
+                          amountOfCoin = sliceWords(message_text, 0, 1)
+                          totalUSDValue = float(getCoinUSDPrice(inputCoin.upper())) * float(amountOfCoin)
+                          botReply = "{} {} = ${}.".format(amountOfCoin, inputCoin.upper(), totalUSDValue)
+                          send_message(sender_id, botReply)
+
+                        else:
+                          botReply = "Oops, it seems like that coin isn't included"
+                          send_message(sender_id, botReply)
+           
+          
 # Cmc of coin                   
                     elif sliceWords(message_text, 0, 2) in cmcLinkTriggerTwo:
                         
@@ -645,6 +670,11 @@ def handle_messages():
                       botReply = chooseRandomObjectFromList(helloOutput)
                       send_message(sender_id, botReply)
                
+          
+# donate
+                    elif message_text in donateTriggers:
+                      botReply = "Thanks for willing to donate! I currently accept BTC, LTC, ETH and NEO. Here are the addresses. \n\n-BTC: \n\n-LTC: \n\n-ETH: \n\n-NEO:"
+                      send_message(sender_id, botReply)
         
         
 # last answer                
