@@ -4,6 +4,7 @@ import sys
 import os
 import json
 from Credentials import *
+import random
 
 
 
@@ -43,6 +44,16 @@ deleteQuickReplyTrigger = ["delete quick reply", "del q r",
 
 addQuickReplyTrigger = ["add quick reply", "add q r",
                         "Add quick reply", "Add q r"]
+
+helloTrigger = ["hey", "hello", "hi",
+               "Hey", "Hello", "Hi"]
+
+
+
+# outputs
+helloOutput = ["Hey, human.", "Hello!", "Hi!", "Hey!"]
+
+
 
 # ____________________________________________________________________
 # price getter
@@ -239,6 +250,7 @@ def addressLinkGiver(addressString):
         reply = "Sorry, it seems that this isn't a supported address. At the moment only the addresses of the following blockchains are supported: \n-Bitcoin \n-Ethereum \n-Litecoin \n-Neo"
         return [reply]
 
+      
 
 # _______________________________________________________________________
 # extra def
@@ -354,7 +366,15 @@ def deleteQuickReply(quickreply, quickreplylist):
             return "I deleted that quick reply."
 
 
-      
+
+def chooseRandomObjectFromList(list):
+    index = random.randint(0, len(list) - 1)
+    print(index)
+    randomObject = list[index]
+    return randomObject
+  
+  
+  
 # _______________________________________________________________________
 # messenger bot
 
@@ -618,8 +638,15 @@ def handle_messages():
                       quickReply = createQuickReplyWithGivenText(textOfQuickReply)
                       botReply = deleteQuickReply(quickReply, quick_replies_list)
                       send_message(sender_id, botReply)
-                      
-                
+            
+            
+# greet the bot
+                    elif message_text in helloTrigger:
+                      botReply = chooseRandomObjectFromList(helloOutput)
+                      send_message(sender_id, botReply)
+               
+        
+        
 # last answer                
                     else:
                         send_message(sender_id, "Sorry I didn't get that or maybe your coin isn't on coinmarketcap.")
