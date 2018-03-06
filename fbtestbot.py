@@ -49,7 +49,7 @@ addQuickReplyTrigger = ["add quick reply", "add q r",
 # prep
 
 import urllib.request, json
-URL = "https://api.coinmarketcap.com/v1/ticker/?limit=300"
+URL = "https://api.coinmarketcap.com/v1/ticker/?limit=400"
 
 with urllib.request.urlopen(URL) as url:
     s = url.read()
