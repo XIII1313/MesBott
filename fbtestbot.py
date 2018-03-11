@@ -408,7 +408,7 @@ def handle_messages():
 # ____________________________________________________________________
                     
                     refreshPrices()
-                    coinList = getCoinList()
+                    coinTickerList = getCoinList()
                 
                 
 # x coinName to usd, x coinName1 to coinName 2               
@@ -416,7 +416,7 @@ def handle_messages():
                         
                         if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
                       
-                            if sliceWords(message_text, 1, 2) in coinList:
+                            if sliceWords(message_text, 1, 2) in coinTickerList:
                               refreshQuickreplyList(message_text, quick_replies_list)
                               botReply = coin1ToUSD(message_text)
                               send_message(sender_id, botReply)
@@ -425,13 +425,13 @@ def handle_messages():
                               botReply = "Oops, it seems like that coin isn't included"
                               send_message(sender_id, botReply)
 
-                        elif sliceWords(message_text, 1, 2) in coinList and sliceWords(message_text, 3, 4) in coinList:
+                        elif sliceWords(message_text, 1, 2) in coinTickerList and sliceWords(message_text, 3, 4) in coinTickerList:
                             refreshQuickreplyList(message_text, quick_replies_list)
                             botReply = coin1ToCoin2(message_text)
                             send_message(sender_id, botReply)
                             
                         elif sliceWords(message_text, 1, 2) in ['usd', 'USD']:
-                            if sliceWords(message_text, 3, 4) in coinList:
+                            if sliceWords(message_text, 3, 4) in coinTickerList:
                               refreshQuickreplyList(message_text, quick_replies_list)
                               botReply = USDTocoin1(message_text)
                               send_message(sender_id, botReply)
@@ -475,7 +475,7 @@ def handle_messages():
                           
 # USD price of coin 1                             
                     elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinUSDValueTrigger:
-                        if sliceWords(message_text, -1, None) in coinList:
+                        if sliceWords(message_text, -1, None) in coinTickerList:
                           refreshQuickreplyList(message_text, quick_replies_list)
                           botReply = "${}".format(round(float(getCoinUSDPrice(sliceWords(message_text, -1, None))), 2))
                           send_message(sender_id, botReply)
@@ -487,7 +487,7 @@ def handle_messages():
                           
 # USD price of coin 2                             
                     elif sliceWords(message_text, 1, len(message_text.split())) in coinUSDValueTrigger:
-                        if sliceWords(message_text, 0, 1) in coinList:
+                        if sliceWords(message_text, 0, 1) in coinTickerList:
                           refreshQuickreplyList(message_text, quick_replies_list)
                           botReply = "${}".format(round(float(getCoinUSDPrice(sliceWords(message_text, 0, 1))), 2))
                           send_message(sender_id, botReply)
@@ -502,13 +502,13 @@ def handle_messages():
 
                         inputCoin = sliceWords(message_text, 1, 2)
 
-                        if inputCoin in coinList:
+                        if inputCoin in coinTickerList:
                           amountOfCoin = sliceWords(message_text, 0, 1)
                           totalUSDValue = float(getCoinUSDPrice(inputCoin)) * float(amountOfCoin)
                           botReply = "{} {} = ${}.".format(amountOfCoin, inputCoin, totalUSDValue)
                           send_message(sender_id, botReply)
 
-                        elif inputCoin.upper() in coinList:
+                        elif inputCoin.upper() in coinTickerList:
                           amountOfCoin = sliceWords(message_text, 0, 1)
                           totalUSDValue = float(getCoinUSDPrice(inputCoin.upper())) * float(amountOfCoin)
                           botReply = "{} {} = ${}.".format(amountOfCoin, inputCoin.upper(), totalUSDValue)
@@ -522,7 +522,7 @@ def handle_messages():
 # Cmc of coin                   
                     elif sliceWords(message_text, 0, 2) in cmcLinkTriggerTwo:
                         
-                      if sliceWords(message_text, 2, 3) in coinList: 
+                      if sliceWords(message_text, 2, 3) in coinTickerList: 
                         refreshQuickreplyList(message_text, quick_replies_list)
                         inputCoin = sliceWords(message_text, 2, 3)
                         botReply = "Here is the link to coinmarketcap of {}. \n \nLink: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
@@ -536,7 +536,7 @@ def handle_messages():
 # cmc coin                        
                     elif sliceWords(message_text, 0, 1) in cmcLinkTriggerOne:
                       
-                      if sliceWords(message_text, 1, 2) in coinList:
+                      if sliceWords(message_text, 1, 2) in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         inputCoin = sliceWords(message_text, 1, 2)
                         botReply = "Here is the link to coinmarketcap of {}. \n \nLink: https://coinmarketcap.com/currencies/{}/".format(inputCoin, getCoinID(inputCoin))
@@ -549,7 +549,7 @@ def handle_messages():
                         
 # BTC price of coin 1        
                     elif sliceWords(message_text, 0, len(message_text.split()) - 1) in coinBTCValueTrigger:
-                        if sliceWords(message_text, -1, None) in coinList:
+                        if sliceWords(message_text, -1, None) in coinTickerList:
                           refreshQuickreplyList(message_text, quick_replies_list)
                           botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, -1, None))), 8))
                           send_message(sender_id, botReply)
@@ -561,7 +561,7 @@ def handle_messages():
                           
 # BTC price of coin 2                             
                     elif sliceWords(message_text, 1, len(message_text.split())) in coinBTCValueTrigger:
-                        if sliceWords(message_text, 0, 1) in coinList:
+                        if sliceWords(message_text, 0, 1) in coinTickerList:
                           refreshQuickreplyList(message_text, quick_replies_list)
                           botReply = "{} BTC".format(round(float(getCoinBTCPrice(sliceWords(message_text, 0, 1))), 8))
                           send_message(sender_id, botReply)
@@ -576,7 +576,7 @@ def handle_messages():
 
                       inputCoin = sliceWords(message_text, 1, 2)
 
-                      if inputCoin in coinList:
+                      if inputCoin in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         allInList = allIn(portfolioList, inputCoin)
                         numberOfCoins = allInList[0]
@@ -594,7 +594,7 @@ def handle_messages():
                     elif sliceWords(message_text, 0, 2) in allInTrigger:
                       inputCoin = sliceWords(message_text, 2, 3)
 
-                      if inputCoin in coinList:
+                      if inputCoin in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         allInList = allIn(portfolioList, inputCoin)
                         numberOfCoins = allInList[0]
@@ -611,7 +611,7 @@ def handle_messages():
                     elif "%" in list(message_text):
                       inputCoin = sliceWords(message_text, -1, None)
 
-                      if inputCoin in coinList:
+                      if inputCoin in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         percentageNumber = getStringBeforeCharacter(message_text, "%")
                         allInPercentList = allInPercent(portfolioList, inputCoin, percentageNumber)
