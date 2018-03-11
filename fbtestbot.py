@@ -20,9 +20,9 @@ coinBTCValueTrigger = ["in BTC", "BTC price", "BTC price of", "to BTC", "BTC",
 portfolioUSDTrigger = ["p", "port", "portfolio", "portfolio in usd", "portfolio in USD",
                        "P", "Port", "Portfolio", "Portfolio in usd", "Portfolio in USD"]
 
-portfolioBTCTrigger = ["p btc", "port btc", "portfolio btc", "p in btc", "port in btc", "portfolio in btc"
-                        "p BTC", "port BTC", "portfolio BTC", "p in BTC", "port in BTC", "portfolio in BTC"
-                        "P btc", "Port btc", "Portfolio btc", "P in btc", "Port in btc", "Portfolio in btc" 
+portfolioBTCTrigger = ["p btc", "port btc", "portfolio btc", "p in btc", "port in btc", "portfolio in btc",
+                        "p BTC", "port BTC", "portfolio BTC", "p in BTC", "port in BTC", "portfolio in BTC",
+                        "P btc", "Port btc", "Portfolio btc", "P in btc", "Port in btc", "Portfolio in btc",
                         "P BTC", "Port BTC", "Portfolio BTC", "P in BTC", "Port in BTC", "Portfolio in BTC"]
 
 cmcLinkTriggerOne = ["cmc", "coinmarketcap",
@@ -516,10 +516,23 @@ def handle_messages():
                     coinTickerList = getCoinTickerList()
                     coinNameList = getCoinNameList()
                 
-                
+          
+# Portfolio usd                            
+                    if message_text in portfolioUSDTrigger:
+                        refreshQuickreplyList(message_text, quick_replies_list)
+                        botReply = getPortfolioUSDPrice(portfolioList)
+                        send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
+                            
+                  
+# Portfolio btc                  
+                    elif message_text in portfolioBTCTrigger:
+                        refreshQuickreplyList(message_text, quick_replies_list)
+                        botReply = getPortfolioBTCPrice(portfolioList)
+                        send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
+            
             
 # x coinName to usd, x coinName1 to coinName 2               
-                    if (isFloat(sliceWords(message_text, 0, 1)) or isInt(sliceWords(message_text, 0, 1))) and sliceWords(message_text, 2, 3) in ["to", "in"]:
+                    elif (isFloat(sliceWords(message_text, 0, 1)) or isInt(sliceWords(message_text, 0, 1))) and sliceWords(message_text, 2, 3) in ["to", "in"]:
                         
                         if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
                       
@@ -759,20 +772,6 @@ def handle_messages():
                             else:
                                 botReply = "Oops, it seems that I can't find this coin."
                                 send_message(sender_id, botReply)
-                      
-                      
-# Portfolio usd                            
-                    elif message_text in portfolioUSDTrigger:
-                        refreshQuickreplyList(message_text, quick_replies_list)
-                        botReply = getPortfolioUSDPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
-                            
-                  
-# Portfolio btc                  
-                    elif message_text in portfolioBTCTrigger:
-                        refreshQuickreplyList(message_text, quick_replies_list)
-                        botReply = getPortfolioBTCPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
                   
                   
 # Price of coin                  
