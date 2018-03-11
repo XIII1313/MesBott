@@ -51,6 +51,43 @@ helloTrigger = ["hey", "hello", "hi",
 donateTriggers = ["donate", "donation",
                   "Donate", "Donation"]
 
+supplyTrigger = ["supply", "supply of",
+                "Supply", "Supply of"]
+
+marketCapTrigger = ["market cap", "mc", "m c", "market capitalization", "market cap of", "market capitalization of",
+                    "Market cap", "Mc", "M c", "Market capitalization" , "Market cap of", "Market capitalization of"]
+
+volumeTrigger = ["volume", "24h volume", "volume of", "24h volume of",
+                 "Volume", "24 Volume of"]
+
+rankTrigger = ["rank", "rank of",
+               "Rank", "Rank of"]
+
+changeTrigger = ["change", "change of",
+                 "Change", "Change of"]
+
+specificChangeTrigger = ["24h change", "7d change", "1h change", "24 hour change", "7 day chage", "1 hour change",
+                         "24h change of", "7d change of", "1h change of", "24 hour change of", "7 day chage of", "1 hour change of"]
+
+h24ChangeTrigger = ["24h change", "24 hour change",
+                         "24h change of", "24 hour change of"]
+
+h1ChangeTrigger = ["1h change", "24 hour change", "1 hour change",
+                         "1h change of", "1 hour change of"]
+
+d7ChangeTrigger = ["7d change", "7 day chage",
+                         "7d change of", "7 day chage of"]
+
+USDValueTrigger = ["USD price", "USD price of",
+                       "usd price", "usd price of", "price",
+                       "Usd price", "Usd price of", "Price"]
+
+BTCValueTrigger = ["BTC price", "BTC price of", "price BTC", "price BTC of",
+                       "btc price", "btc price of", "price btc", "price btc of",
+                       "Btc price", "Btc price of", "Price btc", "Price BTC", "Price btc of", "Price BTC of"]
+
+coinInfoCombinedTrigger = supplyTrigger + marketCapTrigger + volumeTrigger + rankTrigger + changeTrigger + specificChangeTrigger + USDValueTrigger + BTCValueTrigger
+
 
 
 # outputs
@@ -127,12 +164,50 @@ def getCoinID(ticker):
 
 
 
-def getCoinList():
+def getCoinTickerList():
     coinList = []
     for coinDetails in data:
         coinName = coinDetails[u'symbol']
         coinList += [coinName]
     return coinList
+
+  
+  
+def getCoinNameList():
+    coinNameList = []
+    for coinDetails in data:
+        coinName = coinDetails[u'id']
+        coinNameList += [coinName]
+    return coinNameList
+
+  
+  
+coinTickerList = getCoinTickerList()
+coinNameList = getCoinNameList()
+
+
+
+def getCoinInfo(tickerOrName):
+    if tickerOrName in coinTickerList:
+        coin_info = next(coin for coin in data if coin[u'symbol'] == tickerOrName)
+        return coin_info
+
+    elif tickerOrName in coinNameList:
+        coin_info = next(coin for coin in data if coin[u'id'] == tickerOrName)
+        return coin_info
+
+      
+
+def getCoinInfoElement(ticker, aspect):
+    coininfo = getCoinInfo(ticker)
+    coininfoelement = coininfo[aspect]
+    return coininfoelement
+
+
+  
+def getCoinTicker(id):
+    coin_info = next(coin for coin in data if coin[u'id'] == id)
+    return (coin_info[u'symbol'])
 
 
 
@@ -303,6 +378,36 @@ def isInt(value):
       
       
 
+def isFloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+
+  
+def makeLargeNumberReadable(originalstring):
+    if isFloat(originalstring):
+        intstring = str(int(float(originalstring) + 0.5))
+        intstringlist = list(intstring)
+        firstcommaindex = len(intstring) % 3
+        amountofcommas = (len(intstring) // 3)
+
+        if firstcommaindex == 0:
+            amountofcommas -= 1
+
+        for commaindex in range(amountofcommas):
+            intstringlist.insert((-3 * (commaindex + 1)) - commaindex, ',')
+
+        newstring = ''.join(intstringlist)
+        return newstring
+
+    else:
+        return "Error converting large number to readable number."
+      
+      
+      
 def slideObjectInList(newObject, oldList, index = 2):
     if newObject in oldList:
         None
@@ -408,9 +513,11 @@ def handle_messages():
 # ____________________________________________________________________
                     
                     refreshPrices()
-                    coinTickerList = getCoinList()
+                    coinTickerList = getCoinTickerList()
+                    coinNameList = getCoinNameList()
                 
                 
+            
 # x coinName to usd, x coinName1 to coinName 2               
                     if (isFloat(sliceWords(message_text, 0, 1)) or isInt(sliceWords(message_text, 0, 1))) and sliceWords(message_text, 2, 3) in ["to", "in"]:
                         
@@ -445,6 +552,215 @@ def handle_messages():
                             send_message(sender_id, botReply)
 
                             
+# coin info elements                            
+                    if sliceWords(message_text, 0, -1) in coinInfoCombinedTrigger:
+                        coinTickerOrName = sliceWords(message_text, -1, None)
+
+                        if sliceWords(message_text, 0, -1) in USDValueTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                USDPrice = getCoinInfoElement(coinTickerOrName.upper(), "price_usd")
+                                botReply = "${}".format(USDPrice)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                USDPrice = getCoinInfoElement(coinTickerOrName.lower(), "price_usd")
+                                botReply = "${}".format(USDPrice)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in BTCValueTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                BTCPrice = getCoinInfoElement(coinTickerOrName.upper(), "price_btc")
+                                botReply = "{} BTC".format(BTCPrice)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                BTCPrice = getCoinInfoElement(coinTickerOrName.lower(), "price_btc")
+                                botReply = "{} BTC".format(BTCPrice)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in supplyTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                availableSupply = makeLargeNumberReadable((getCoinInfoElement(coinTickerOrName.upper(), "available_supply")))
+                                maxSupply = getCoinInfoElement(coinTickerOrName.upper(), "max_supply")
+
+                                if maxSupply == None:
+                                    maxSupply = "not available"
+
+                                else:
+                                    maxSupply = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.upper(), "max_supply"))
+
+                                botReply = "The available supply of {} is {}. \nThe max supply is {}.".format(coinTickerOrName.upper(), availableSupply, maxSupply)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                availableSupply = makeLargeNumberReadable((getCoinInfoElement(coinTickerOrName.lower(), "available_supply")))
+                                maxSupply = getCoinInfoElement(coinTickerOrName.lower(), "max_supply")
+
+                                if maxSupply == None:
+                                    maxSupply = "not available"
+
+                                else:
+                                    maxSupply = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.lower(), "max_supply"))
+
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+                                botReply = "The available supply of {} is {}. \nThe max supply is {}.".format(coinTicker, availableSupply, maxSupply)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in marketCapTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                marketCap = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.upper(), "market_cap_usd"))
+                                botReply = "The market cap of {} is ${}.".format(coinTickerOrName.upper(), marketCap)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                marketCap = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.lower(), "market_cap_usd"))
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+                                botReply = "The market cap of {} is ${}.".format(coinTicker, marketCap)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in volumeTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                volume = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.upper(), "24h_volume_usd"))
+                                botReply = "The volume of {} is ${}.".format(coinTickerOrName.upper(), volume)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                volume = makeLargeNumberReadable(getCoinInfoElement(coinTickerOrName.lower(), "24h_volume_usd"))
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+                                botReply = "The volume of {} is ${}.".format(coinTicker, volume)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in rankTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                rank = getCoinInfoElement(coinTickerOrName.upper(), "rank")
+                                botReply = "{} is placed at rank number {}.".format(coinTickerOrName.upper(), rank)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                rank = getCoinInfoElement(coinTickerOrName.lower(), "rank")
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+                                botReply = "{} is placed at rank number {}.".format(coinTicker, rank)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in changeTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                change = getCoinInfoElement(coinTickerOrName.upper(), "percent_change_24h")
+                                botReply = "{} changed {}% the past 24 hours.".format(coinTickerOrName.upper(), change)
+                                send_message(sender_id, botReply)
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                change = getCoinInfoElement(coinTickerOrName.lower(), "percent_change_24h")
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+                                botReply = "{} changed {}% the past 24 hours.".format(coinTicker, change)
+                                send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+
+
+
+                        elif sliceWords(message_text, 0, -1) in specificChangeTrigger:
+
+                            if coinTickerOrName.upper() in coinTickerList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                if sliceWords(message_text, 0, -1) in h24ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.upper(), "percent_change_24h")
+                                    botReply = "{} changed {}% the past 24 hours.".format(coinTickerOrName.upper(), change)
+                                    send_message(sender_id, botReply)
+
+                                elif sliceWords(message_text, 0, -1) in h1ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.upper(), "percent_change_1h")
+                                    botReply = "{} changed {}% the past hour.".format(coinTickerOrName.upper(), change)
+                                    send_message(sender_id, botReply)
+
+                                elif sliceWords(message_text, 0, -1) in d7ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.upper(), "percent_change_7d")
+                                    botReply = "{} changed {}% the pas 7 days.".format(coinTickerOrName.upper(), change)
+                                    send_message(sender_id, botReply)
+
+
+                            elif coinTickerOrName.lower() in coinNameList:
+                                refreshQuickreplyList(message_text, quick_replies_list)
+                                coinTicker = getCoinInfoElement(coinTickerOrName.lower(), "symbol")
+
+                                if sliceWords(message_text, 0, -1) in h24ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.lower(), "percent_change_24h")
+                                    botReply = "{} changed {}% the past 24 hours.".format(coinTicker, change)
+                                    send_message(sender_id, botReply)
+
+                                elif sliceWords(message_text, 0, -1) in h1ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.lower(), "percent_change_1h")
+                                    botReply = "{} changed {}% the past hour.".format(coinTicker, change)
+                                    send_message(sender_id, botReply)
+
+                                elif sliceWords(message_text, 0, -1) in d7ChangeTrigger:
+                                    change = getCoinInfoElement(coinTickerOrName.lower(), "percent_change_7d")
+                                    botReply = "{} changed {}% the pas 7 days.".format(coinTicker, change)
+                                    send_message(sender_id, botReply)
+
+                            else:
+                                botReply = "Oops, it seems that I can't find this coin."
+                                send_message(sender_id, botReply)
+                      
+                      
 # Portfolio usd                            
                     elif message_text in portfolioUSDTrigger:
                         refreshQuickreplyList(message_text, quick_replies_list)
@@ -460,14 +776,14 @@ def handle_messages():
                   
                   
 # Price of coin                  
-                    elif message_text.upper() in getCoinList():
+                    elif message_text.upper() in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text.upper())), 2))
                         send_message(sender_id, botReply)
         
         
 # Price of coin lowercase                 
-                    elif message_text in getCoinList():
+                    elif message_text in coinTickerList:
                         refreshQuickreplyList(message_text, quick_replies_list)
                         botReply = "${}".format(round(float(getCoinUSDPrice(message_text)), 2))
                         send_message(sender_id, botReply)
