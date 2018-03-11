@@ -553,7 +553,7 @@ def handle_messages():
 
                             
 # coin info elements                            
-                    if sliceWords(message_text, 0, -1) in coinInfoCombinedTrigger:
+                    elif sliceWords(message_text, 0, -1) in coinInfoCombinedTrigger:
                         coinTickerOrName = sliceWords(message_text, -1, None)
 
                         if sliceWords(message_text, 0, -1) in USDValueTrigger:
