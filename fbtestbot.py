@@ -1025,7 +1025,7 @@ def handle_messages():
 
 
 
-                        if sliceWords(message_text, 0, -1) in ATHPriceTrigger:
+                        if sliceWords(message_text, 0, -1).lower() in ATHPriceTrigger:
 
                             if coinTickerOrName.upper() in ATHCoinTickerList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
@@ -1045,7 +1045,7 @@ def handle_messages():
 
 
 
-                        elif sliceWords(message_text, 0, -1) in ATHDateTrigger:
+                        elif sliceWords(message_text, 0, -1).lower() in ATHDateTrigger:
 
                             if coinTickerOrName.upper() in ATHCoinTickerList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
@@ -1066,7 +1066,7 @@ def handle_messages():
 
 
 
-                        elif sliceWords(message_text, 0, -1) in daysSinceATHTrigger:
+                        elif sliceWords(message_text, 0, -1).lower() in daysSinceATHTrigger:
 
                             if coinTickerOrName.upper() in ATHCoinTickerList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
@@ -1086,7 +1086,7 @@ def handle_messages():
 
 
 
-                        elif sliceWords(message_text, 0, -1) in percentageToATHTrigger:
+                        elif sliceWords(message_text, 0, -1).lower() in percentageToATHTrigger:
 
                             if coinTickerOrName.upper() in ATHCoinTickerList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
@@ -1106,7 +1106,7 @@ def handle_messages():
 
 
 
-                        elif sliceWords(message_text, 0, -1) in percentageFromATHTrigger:
+                        elif sliceWords(message_text, 0, -1).lower() in percentageFromATHTrigger:
 
                             if coinTickerOrName.upper() in ATHCoinTickerList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
