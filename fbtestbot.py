@@ -1035,7 +1035,7 @@ def handle_messages():
 
                             elif coinTickerOrName.lower() in ATHCoinNameList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
-                                ATHPrice = getCoinInfoElement(coinTickerOrName.upper(), "ath_price", ATHData)
+                                ATHPrice = getCoinInfoElement(coinTickerOrName.lower(), "ath_price", ATHData)
                                 botReply = "The all time high of {} is {}.".format(coinTickerOrName, ATHPrice)
                                 send_message(sender_id, botReply)
 
@@ -1055,7 +1055,7 @@ def handle_messages():
 
                             elif coinTickerOrName.lower() in ATHCoinNameList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
-                                ATHDate = changeATHDateToString(getCoinInfoElement(coinTickerOrName.upper(), "ath_date", ATHData))
+                                ATHDate = changeATHDateToString(getCoinInfoElement(coinTickerOrName.lower(), "ath_date", ATHData))
                                 botReply = "On {} {} reached its all time high.".format(ATHDate, coinTickerOrName)
                                 send_message(sender_id, botReply)
 
@@ -1076,7 +1076,7 @@ def handle_messages():
 
                             elif coinTickerOrName.lower() in ATHCoinNameList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
-                                daysSinceATH = getCoinInfoElement(coinTickerOrName.upper(), "days_since_ath", ATHData)
+                                daysSinceATH = getCoinInfoElement(coinTickerOrName.lower(), "days_since_ath", ATHData)
                                 botReply = "{} days ago {} had its all time high.".format(daysSinceATH, coinTickerOrName)
                                 send_message(sender_id, botReply)
 
@@ -1096,7 +1096,7 @@ def handle_messages():
 
                             elif coinTickerOrName.lower() in ATHCoinNameList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
-                                percentageToATH = getCoinInfoElement(coinTickerOrName.upper(), "%_to_ath", ATHData)
+                                percentageToATH = getCoinInfoElement(coinTickerOrName.lower(), "%_to_ath", ATHData)
                                 botReply = "{} needs to go up by {} to reach its all time high".format(coinTickerOrName, percentageToATH)
                                 send_message(sender_id, botReply)
 
@@ -1116,7 +1116,7 @@ def handle_messages():
 
                             elif coinTickerOrName.lower() in ATHCoinNameList:
                                 refreshQuickreplyList(message_text, quick_replies_list)
-                                percentageFromATH = getCoinInfoElement(coinTickerOrName.upper(), "%_from_ath", ATHData)
+                                percentageFromATH = getCoinInfoElement(coinTickerOrName.lower(), "%_from_ath", ATHData)
                                 botReply = "{} dropped {} under its all time high".format(coinTickerOrName, percentageFromATH)
                                 send_message(sender_id, botReply)
 
