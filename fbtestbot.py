@@ -1017,7 +1017,7 @@ def handle_messages():
 
 
                     # ath data
-                    elif sliceWords(message_text, 0, -1) in coinATHInfoCombinedTrigger:
+                    elif sliceWords(message_text, 0, -1).lower() in coinATHInfoCombinedTrigger:
                         refreshATHData()
                         ATHCoinTickerList = getCoinTickerList(ATHData)
                         ATHCoinNameList = getCoinNameList(ATHData)
