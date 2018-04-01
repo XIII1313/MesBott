@@ -104,6 +104,7 @@ percentageFromATHTrigger = ["percentage from ath", "percentage from ath of", "pe
 
 coinATHInfoCombinedTrigger = ATHPriceTrigger + ATHDateTrigger + daysSinceATHTrigger + percentageToATHTrigger + percentageFromATHTrigger
 
+detailTrigger = ["details", "detail", "details of", "detail of", "give details", "give details of"]
 # outputs
 helloOutput = ["Hey, human.", "Hello!", "Hi!", "Hey!"]
 
@@ -197,11 +198,11 @@ coinNameList = getCoinNameList(CMCdata)
 
 
 def getCoinInfo(tickerOrName, data):
-    if tickerOrName in coinTickerList:
+    if tickerOrName in getCoinTickerList(data):
         coin_info = next(coin for coin in data if coin[u'symbol'] == tickerOrName)
         return coin_info
 
-    elif tickerOrName in coinNameList:
+    elif tickerOrName in getCoinNameList(data):
         coin_info = next(coin for coin in data if coin[u'id'] == tickerOrName)
         return coin_info
 
@@ -500,7 +501,65 @@ def addSymbolToATHData(ath_data, cmc_data):
 def refreshATHData():
     global ATHData
     ATHData = getATHDataTopCoins(CMCData, 200)
+    
+    
 
+ATHData = refreshATHData()
+
+def giveCoinDetails(coin_ticker_or_name):
+    bot_reply = ""
+
+    if coin_ticker_or_name in getCoinNameList(CMCdata) or coin_ticker_or_name in getCoinTickerList(CMCdata) or coin_ticker_or_name in getCoinNameList(ATHData) or coin_ticker_or_name in getCoinTickerList(ATHData):
+
+        if coin_ticker_or_name in getCoinNameList(CMCdata) or coin_ticker_or_name in getCoinTickerList(CMCdata):
+
+            if coin_ticker_or_name in getCoinNameList(CMCdata):
+                name = coin_ticker_or_name
+                ticker = getCoinInfoElement(coin_ticker_or_name, "symbol", CMCdata)
+
+
+            elif coin_ticker_or_name in getCoinTickerList(CMCdata):
+                name = getCoinInfoElement(coin_ticker_or_name, "id", CMCdata)
+                ticker = coin_ticker_or_name
+
+            bot_reply += "Name: {}".format(name)
+            bot_reply += "\nticker: {}".format(ticker)
+
+            USD_price = getCoinInfoElement(coin_ticker_or_name, "price_usd", CMCdata)
+            BTC_price = getCoinInfoElement(coin_ticker_or_name, "price_btc", CMCdata)
+            bot_reply += "\nUSD price: ${}\nBTC price: {} BTC".format(USD_price, BTC_price)
+
+            market_cap = makeLargeNumberReadable(getCoinInfoElement(coin_ticker_or_name, "market_cap_usd", CMCdata))
+            bot_reply += "\nMarket cap: ${}".format(market_cap)
+
+            available_supply = getCoinInfoElement(coin_ticker_or_name, "available_supply", CMCdata)
+            if available_supply is not None:
+                available_supply = makeLargeNumberReadable(available_supply)
+                bot_reply += "\nAvailable supply: {}".format(available_supply)
+
+            max_supply = getCoinInfoElement(coin_ticker_or_name, "max_supply", CMCdata)
+            if max_supply is not None:
+                max_supply = makeLargeNumberReadable(max_supply)
+                bot_reply += "\nTotal supply: {}".format(max_supply)
+
+            percentage_change = getCoinInfoElement(coin_ticker_or_name, "percent_change_24h", CMCdata)
+            bot_reply += "\n24h change: {}%".format(percentage_change)
+
+
+        if coin_ticker_or_name in getCoinNameList(ATHData) or coin_ticker_or_name in getCoinTickerList(ATHData):
+            ath_price = getCoinInfoElement(coin_ticker_or_name, "ath_price", ATHData)
+            ath_date = changeATHDateToString(getCoinInfoElement(coin_ticker_or_name, "ath_date", ATHData))
+            percentage_from_ath = getCoinInfoElement(coin_ticker_or_name, "%_from_ath", ATHData)
+
+            bot_reply += "\nATH price: {}".format(ath_price)
+            bot_reply += "\nATH date: {}".format(ath_date)
+            bot_reply += "\nPercentage from ATH: {}".format(percentage_from_ath)
+
+        return bot_reply
+
+    else:
+        bot_reply = "It seems that I can't find this coin."
+        
 
 
 # _______________________________________________________________________
@@ -1013,6 +1072,24 @@ def handle_messages():
                             else:
                                 botReply = "Oops, it seems that I can't find this coin."
                                 send_message(sender_id, botReply)
+                                
+                    # details
+                    elif sliceWords(message_text, 0, -1).lower() in detailTrigger:
+                        coinTickerOrName = sliceWords(message_text, -1, None)
+
+                        if coinTickerOrName.upper() in coinTickerList:
+                            refreshATHData()
+                            botReply = giveCoinDetails(coinTickerOrName.upper())
+                            send_message(sender_id, botReply)
+
+                        elif coinTickerOrName.lower() in coinNameList:
+                            refreshATHData()
+                            botReply = giveCoinDetails(coinTickerOrName.lower())
+                            send_message(sender_id, botReply)
+
+                        else:
+                            botReply = "It seems that I can't find this coin."
+                            send_message(sender_id, botReply)
 
 
 
