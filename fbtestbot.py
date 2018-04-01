@@ -108,6 +108,213 @@ detailTrigger = ["details", "detail", "details of", "detail of", "give details",
 # outputs
 helloOutput = ["Hey, human.", "Hello!", "Hi!", "Hey!"]
 
+
+# _______________________________________________________________________
+# extra def
+
+def sliceWords(string, beginIndex, endIndex):
+    stringList = string.split()
+    stringList = stringList[beginIndex:endIndex]
+    newString = ""
+    for word in stringList:
+        newString += word
+        newString += " "
+    newString = newString[0: len(newString) - 1]
+    return newString
+
+
+
+def getStringBeforeCharacter(string, character):
+    substring = ""
+
+    for index in range(len(string)):
+
+        if string[index] == character:
+            break
+
+        else:
+            substring += string[index]
+
+    return substring
+
+
+
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+
+def isInt(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+
+def isFloat(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
+
+
+def makeLargeNumberReadable(originalstring):
+    if isFloat(originalstring):
+        intstring = str(int(float(originalstring) + 0.5))
+        intstringlist = list(intstring)
+        firstcommaindex = len(intstring) % 3
+        amountofcommas = (len(intstring) // 3)
+
+        if firstcommaindex == 0:
+            amountofcommas -= 1
+
+        for commaindex in range(amountofcommas):
+            intstringlist.insert((-3 * (commaindex + 1)) - commaindex, ',')
+
+        newstring = ''.join(intstringlist)
+        return newstring
+
+    else:
+        return "Error converting large number to readable number."
+
+
+
+def slideObjectInList(newObject, oldList, index=2):
+    if newObject in oldList:
+        None
+    else:
+        oldList.pop(index)
+        oldList.insert(0, newObject)
+
+
+
+def createQuickReplyWithGivenText(quickreplytext):
+    quickreply = {
+        "content_type": "text",
+        "title": quickreplytext,
+        "payload": quickreplytext,
+    }
+    return quickreply
+
+
+
+def refreshQuickreplyList(messagetext, quickreplylist):
+    quickreply = createQuickReplyWithGivenText(messagetext)
+    slideObjectInList(quickreply, quickreplylist)
+
+
+
+def addQuickReply(quickreply, quickreplylist):
+    if len(quickreplylist) == 11:
+        return "You have created the max amount of quick replies. You will need to delete a quick reply by typing 'delete quick reply' and the text of the quick reply."
+
+    elif quickreply in quickreplylist[3:]:
+        return "You already have this quick reply."
+
+    else:
+        quickreplylist.insert(3, quickreply)
+        return "I added that quick reply."
+
+
+
+def deleteQuickReply(quickreply, quickreplylist):
+    counter = 0
+
+    if len(quickreplylist) == 5:
+        return "You don't have any quick replies to delete. You can't delete default quick replies."
+
+    else:
+        lengthOfOldList = len(quickreplylist)
+        for index in range(lengthOfOldList - 2):
+
+            if index in [0, 1, 2]:
+                None
+
+            else:
+                if quickreplylist[index] == quickreply:
+                    quickreplylist.pop(index)
+                    break
+
+                else:
+                    counter += 1
+
+        if counter == lengthOfOldList - 5:
+            return "It seems that you haven't made this quick reply yet. \nRemember that you can't delete default quick replies."
+
+        else:
+            return "I deleted that quick reply."
+
+
+
+def chooseRandomObjectFromList(list):
+    index = random.randint(0, len(list) - 1)
+    randomObject = list[index]
+    return randomObject
+
+
+
+def removeSpaces(original_string):
+    wordList = original_string.split()
+    new_string = ''
+
+    for word in wordList:
+        new_string += word
+
+    return new_string
+
+
+def getStringBetweenCharacters(originalstring, firstchar, lastchar):
+    try:
+        start = originalstring.index(firstchar) + len(firstchar)
+        end = originalstring.index(lastchar, start)
+        return originalstring[start:end]
+    except ValueError:
+        return ""
+
+
+
+def changeATHDateToString(ATHDate):
+    ATHDateStringList = ATHDate.split("/")
+    year = ATHDateStringList[0]
+    day = ATHDateStringList[2]
+    monthDigit = ATHDateStringList[1]
+
+    if monthDigit == "01":
+        month = "January"
+    elif monthDigit == "02":
+        month = "Febraury"
+    elif monthDigit == "03":
+        month = "March"
+    elif monthDigit == "04":
+        month = "April"
+    elif monthDigit == "05":
+        month = "May"
+    elif monthDigit == "06":
+        month = "June"
+    elif monthDigit == "07":
+        month = "July"
+    elif monthDigit == "08":
+        month = "August"
+    elif monthDigit == "09":
+        month = "September"
+    elif monthDigit == "10":
+        month = "October"
+    elif monthDigit == "11":
+        month = "November"
+    else:
+        month = "December"
+
+    ATHDateSting = "{} {} {}".format(day, month, year)
+    return ATHDateSting
+
 # ____________________________________________________________________
 # price getter
 # prep
@@ -158,9 +365,9 @@ quick_replies_list = [{
 # defs for API
 def refreshCMCData():
     with urllib.request.urlopen(CMC_URL) as url:
-        global s, CMCData
+        global s, CMCdata
         s = url.read()
-    CMCData = json.loads(s)
+    CMCdata = json.loads(s)
 
 
 def getCoinUSDPrice(ticker):
@@ -500,7 +707,7 @@ def addSymbolToATHData(ath_data, cmc_data):
 
 def refreshATHData():
     global ATHData
-    ATHData = getATHDataTopCoins(CMCData)
+    ATHData = getATHDataTopCoins(CMCdata)
     
     
 
@@ -562,211 +769,7 @@ def giveCoinDetails(coin_ticker_or_name):
         
 
 
-# _______________________________________________________________________
-# extra def
 
-def sliceWords(string, beginIndex, endIndex):
-    stringList = string.split()
-    stringList = stringList[beginIndex:endIndex]
-    newString = ""
-    for word in stringList:
-        newString += word
-        newString += " "
-    newString = newString[0: len(newString) - 1]
-    return newString
-
-
-
-def getStringBeforeCharacter(string, character):
-    substring = ""
-
-    for index in range(len(string)):
-
-        if string[index] == character:
-            break
-
-        else:
-            substring += string[index]
-
-    return substring
-
-
-
-def isFloat(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-
-
-
-def isInt(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-
-
-
-def isFloat(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-
-
-
-def makeLargeNumberReadable(originalstring):
-    if isFloat(originalstring):
-        intstring = str(int(float(originalstring) + 0.5))
-        intstringlist = list(intstring)
-        firstcommaindex = len(intstring) % 3
-        amountofcommas = (len(intstring) // 3)
-
-        if firstcommaindex == 0:
-            amountofcommas -= 1
-
-        for commaindex in range(amountofcommas):
-            intstringlist.insert((-3 * (commaindex + 1)) - commaindex, ',')
-
-        newstring = ''.join(intstringlist)
-        return newstring
-
-    else:
-        return "Error converting large number to readable number."
-
-
-
-def slideObjectInList(newObject, oldList, index=2):
-    if newObject in oldList:
-        None
-    else:
-        oldList.pop(index)
-        oldList.insert(0, newObject)
-
-
-
-def createQuickReplyWithGivenText(quickreplytext):
-    quickreply = {
-        "content_type": "text",
-        "title": quickreplytext,
-        "payload": quickreplytext,
-    }
-    return quickreply
-
-
-
-def refreshQuickreplyList(messagetext, quickreplylist):
-    quickreply = createQuickReplyWithGivenText(messagetext)
-    slideObjectInList(quickreply, quickreplylist)
-
-
-
-def addQuickReply(quickreply, quickreplylist):
-    if len(quickreplylist) == 11:
-        return "You have created the max amount of quick replies. You will need to delete a quick reply by typing 'delete quick reply' and the text of the quick reply."
-
-    elif quickreply in quickreplylist[3:]:
-        return "You already have this quick reply."
-
-    else:
-        quickreplylist.insert(3, quickreply)
-        return "I added that quick reply."
-
-
-
-def deleteQuickReply(quickreply, quickreplylist):
-    counter = 0
-
-    if len(quickreplylist) == 5:
-        return "You don't have any quick replies to delete. You can't delete default quick replies."
-
-    else:
-        lengthOfOldList = len(quickreplylist)
-        for index in range(lengthOfOldList - 2):
-
-            if index in [0, 1, 2]:
-                None
-
-            else:
-                if quickreplylist[index] == quickreply:
-                    quickreplylist.pop(index)
-                    break
-
-                else:
-                    counter += 1
-
-        if counter == lengthOfOldList - 5:
-            return "It seems that you haven't made this quick reply yet. \nRemember that you can't delete default quick replies."
-
-        else:
-            return "I deleted that quick reply."
-
-
-
-def chooseRandomObjectFromList(list):
-    index = random.randint(0, len(list) - 1)
-    randomObject = list[index]
-    return randomObject
-
-
-
-def removeSpaces(original_string):
-    wordList = original_string.split()
-    new_string = ''
-
-    for word in wordList:
-        new_string += word
-
-    return new_string
-
-
-def getStringBetweenCharacters(originalstring, firstchar, lastchar):
-    try:
-        start = originalstring.index(firstchar) + len(firstchar)
-        end = originalstring.index(lastchar, start)
-        return originalstring[start:end]
-    except ValueError:
-        return ""
-
-
-
-def changeATHDateToString(ATHDate):
-    ATHDateStringList = ATHDate.split("/")
-    year = ATHDateStringList[0]
-    day = ATHDateStringList[2]
-    monthDigit = ATHDateStringList[1]
-
-    if monthDigit == "01":
-        month = "January"
-    elif monthDigit == "02":
-        month = "Febraury"
-    elif monthDigit == "03":
-        month = "March"
-    elif monthDigit == "04":
-        month = "April"
-    elif monthDigit == "05":
-        month = "May"
-    elif monthDigit == "06":
-        month = "June"
-    elif monthDigit == "07":
-        month = "July"
-    elif monthDigit == "08":
-        month = "August"
-    elif monthDigit == "09":
-        month = "September"
-    elif monthDigit == "10":
-        month = "October"
-    elif monthDigit == "11":
-        month = "November"
-    else:
-        month = "December"
-
-    ATHDateSting = "{} {} {}".format(day, month, year)
-    return ATHDateSting
 
 
 
