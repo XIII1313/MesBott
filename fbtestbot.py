@@ -120,10 +120,10 @@ with urllib.request.urlopen(CMC_URL) as cmc_url:
 CMCdata = json.loads(s)
 
 # var
-portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49],
-                 ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18],
-                 ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0],
-                 ['TRX', 500.0]]
+# portfolioList = [['NEO', 42.1], ['WTC', 67.94], ['VEN', 226.13], ['ETH', 0.895], ['NET', 173.2], ['LTC', 3.49],
+#                  ['JNT', 1297.0], ['OMG', 27.4], ['MOD', 95.8], ['LSK', 8.0], ['STRAT', 20.4], ['ICX', 26.18],
+#                  ['FCT', 3.7], ['REQ', 327.7], ['MIOTA', 49.5], ['BTC', 0.00912], ['NANO', 10.04], ['SALT', 11.0],
+#                  ['TRX', 500.0]]
 
 quick_replies_list = [{
     "content_type": "text",
@@ -745,18 +745,18 @@ def handle_messages():
                     coinTickerList = getCoinTickerList(CMCdata)
                     coinNameList = getCoinNameList(CMCdata)
 
-                    # Portfolio usd
-                    if message_text in portfolioUSDTrigger:
-                        refreshQuickreplyList(message_text, quick_replies_list)
-                        botReply = getPortfolioUSDPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
+#                     # Portfolio usd
+#                     if message_text in portfolioUSDTrigger:
+#                         refreshQuickreplyList(message_text, quick_replies_list)
+#                         botReply = getPortfolioUSDPrice(portfolioList)
+#                         send_message(sender_id, "Your portfolio is valued at ${}.".format(botReply))
 
 
-                    # Portfolio btc
-                    elif message_text in portfolioBTCTrigger:
-                        refreshQuickreplyList(message_text, quick_replies_list)
-                        botReply = getPortfolioBTCPrice(portfolioList)
-                        send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
+#                     # Portfolio btc
+#                     elif message_text in portfolioBTCTrigger:
+#                         refreshQuickreplyList(message_text, quick_replies_list)
+#                         botReply = getPortfolioBTCPrice(portfolioList)
+#                         send_message(sender_id, "Your portfolio is valued at {} BTC.".format(botReply))
 
 
                     # x coinName to usd, x coinName1 to coinName 2
@@ -1242,61 +1242,61 @@ def handle_messages():
                             send_message(sender_id, botReply)
 
 
-                    # all-in
-                    elif sliceWords(message_text, 0, 1) in allInTrigger:
+#                     # all-in
+#                     elif sliceWords(message_text, 0, 1) in allInTrigger:
 
-                        inputCoin = sliceWords(message_text, 1, 2)
+#                         inputCoin = sliceWords(message_text, 1, 2)
 
-                        if inputCoin in coinTickerList:
-                            refreshQuickreplyList(message_text, quick_replies_list)
-                            allInList = allIn(portfolioList, inputCoin)
-                            numberOfCoins = allInList[0]
-                            portfolioValue = allInList[1]
+#                         if inputCoin in coinTickerList:
+#                             refreshQuickreplyList(message_text, quick_replies_list)
+#                             allInList = allIn(portfolioList, inputCoin)
+#                             numberOfCoins = allInList[0]
+#                             portfolioValue = allInList[1]
 
-                            botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(
-                                inputCoin, numberOfCoins, inputCoin, portfolioValue)
-                            send_message(sender_id, botReply)
+#                             botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(
+#                                 inputCoin, numberOfCoins, inputCoin, portfolioValue)
+#                             send_message(sender_id, botReply)
 
-                        else:
-                            botReply = "It seems that I can't find your coin, sorry."
-                            send_message(sender_id, botReply)
-
-
-                    # all in
-                    elif sliceWords(message_text, 0, 2) in allInTrigger:
-                        inputCoin = sliceWords(message_text, 2, 3)
-
-                        if inputCoin in coinTickerList:
-                            refreshQuickreplyList(message_text, quick_replies_list)
-                            allInList = allIn(portfolioList, inputCoin)
-                            numberOfCoins = allInList[0]
-                            portfolioValue = allInList[1]
-                            botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(
-                                inputCoin, numberOfCoins, inputCoin, portfolioValue)
-                            send_message(sender_id, botReply)
-
-                        else:
-                            botReply = "It seems that I can't find your coin, sorry."
-                            send_message(sender_id, botReply)
+#                         else:
+#                             botReply = "It seems that I can't find your coin, sorry."
+#                             send_message(sender_id, botReply)
 
 
-                    # all in %
-                    elif "%" in list(message_text):
-                        inputCoin = sliceWords(message_text, -1, None)
+#                     # all in
+#                     elif sliceWords(message_text, 0, 2) in allInTrigger:
+#                         inputCoin = sliceWords(message_text, 2, 3)
 
-                        if inputCoin in coinTickerList:
-                            refreshQuickreplyList(message_text, quick_replies_list)
-                            percentageNumber = getStringBeforeCharacter(message_text, "%")
-                            allInPercentList = allInPercent(portfolioList, inputCoin, percentageNumber)
-                            numberOfCoins = allInPercentList[0]
-                            value = allInPercentList[1]
-                            botReply = "If you would allocate {}% of your portfolio to {}, you would have {} {}. Which is worth ${}".format(
-                                percentageNumber, inputCoin, numberOfCoins, inputCoin, value)
-                            send_message(sender_id, botReply)
+#                         if inputCoin in coinTickerList:
+#                             refreshQuickreplyList(message_text, quick_replies_list)
+#                             allInList = allIn(portfolioList, inputCoin)
+#                             numberOfCoins = allInList[0]
+#                             portfolioValue = allInList[1]
+#                             botReply = "If you would go all in on {}, you would have {} {}. Which is worth ${}".format(
+#                                 inputCoin, numberOfCoins, inputCoin, portfolioValue)
+#                             send_message(sender_id, botReply)
 
-                        else:
-                            botReply = "It seems that I can't find your coin, sorry."
-                            send_message(sender_id, botReply)
+#                         else:
+#                             botReply = "It seems that I can't find your coin, sorry."
+#                             send_message(sender_id, botReply)
+
+
+#                     # all in %
+#                     elif "%" in list(message_text):
+#                         inputCoin = sliceWords(message_text, -1, None)
+
+#                         if inputCoin in coinTickerList:
+#                             refreshQuickreplyList(message_text, quick_replies_list)
+#                             percentageNumber = getStringBeforeCharacter(message_text, "%")
+#                             allInPercentList = allInPercent(portfolioList, inputCoin, percentageNumber)
+#                             numberOfCoins = allInPercentList[0]
+#                             value = allInPercentList[1]
+#                             botReply = "If you would allocate {}% of your portfolio to {}, you would have {} {}. Which is worth ${}".format(
+#                                 percentageNumber, inputCoin, numberOfCoins, inputCoin, value)
+#                             send_message(sender_id, botReply)
+
+#                         else:
+#                             botReply = "It seems that I can't find your coin, sorry."
+#                             send_message(sender_id, botReply)
 
 
                     # address search
@@ -1325,20 +1325,20 @@ def handle_messages():
                             send_message(sender_id, botReply)
 
 
-                    # add quick reply
-                    elif sliceWords(message_text, 0, 3) in addQuickReplyTrigger:
-                        textOfQuickReply = sliceWords(message_text, 3, None)
-                        quickReply = createQuickReplyWithGivenText(textOfQuickReply)
-                        botReply = addQuickReply(quickReply, quick_replies_list)
-                        send_message(sender_id, botReply)
+#                     # add quick reply
+#                     elif sliceWords(message_text, 0, 3) in addQuickReplyTrigger:
+#                         textOfQuickReply = sliceWords(message_text, 3, None)
+#                         quickReply = createQuickReplyWithGivenText(textOfQuickReply)
+#                         botReply = addQuickReply(quickReply, quick_replies_list)
+#                         send_message(sender_id, botReply)
 
 
-                    # delete quick reply
-                    elif sliceWords(message_text, 0, 3) in deleteQuickReplyTrigger:
-                        textOfQuickReply = sliceWords(message_text, 3, None)
-                        quickReply = createQuickReplyWithGivenText(textOfQuickReply)
-                        botReply = deleteQuickReply(quickReply, quick_replies_list)
-                        send_message(sender_id, botReply)
+#                     # delete quick reply
+#                     elif sliceWords(message_text, 0, 3) in deleteQuickReplyTrigger:
+#                         textOfQuickReply = sliceWords(message_text, 3, None)
+#                         quickReply = createQuickReplyWithGivenText(textOfQuickReply)
+#                         botReply = deleteQuickReply(quickReply, quick_replies_list)
+#                         send_message(sender_id, botReply)
 
 
                     # greet the bot
