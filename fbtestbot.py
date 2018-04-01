@@ -931,7 +931,7 @@ def handle_messages():
                                 refreshQuickreplyList(message_text, quick_replies_list)
                                 availableSupply = makeLargeNumberReadable(
                                     (getCoinInfoElement(coinTickerOrName.lower(), "available_supply", CMCdata)))
-                                maxSupply = getCoinInfoElement(coinTickerOrName.lower(), "max_supply")
+                                maxSupply = getCoinInfoElement(coinTickerOrName.lower(), "max_supply", CMCdata)
 
                                 if maxSupply == None:
                                     maxSupply = "not available"
