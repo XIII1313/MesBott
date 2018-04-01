@@ -6,6 +6,9 @@ import json
 from Credentials import *
 import random
 
+print(1)
+print("hello")
+
 # trigger lists
 coinUSDValueTrigger = ["in USD", "USD price", "USD price of", "to USD", "USD",
                        "in usd", "usd price", "usd price of", "to usd", "usd",
@@ -798,6 +801,7 @@ def handle_messages():
             for messaging_event in entry["messaging"]:
 
                 if messaging_event.get("message"):
+                    print(messaging_event)
                     sender_id = messaging_event["sender"]["id"]
                     recipient_id = messaging_event["recipient"]["id"]
                     message_text = messaging_event["message"]["text"]
