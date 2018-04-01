@@ -804,7 +804,10 @@ def handle_messages():
                     print(messaging_event)
                     sender_id = messaging_event["sender"]["id"]
                     recipient_id = messaging_event["recipient"]["id"]
-                    message_text = messaging_event["message"]["text"]
+                    try:
+                        message_text = messaging_event["message"]["text"]
+                    except KeyError:
+                        message_text = 'image'
                     # ____________________________________________________________________
 
                     refreshCMCData()
