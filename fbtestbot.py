@@ -467,7 +467,7 @@ def getReadableATHData(urlstring):
 
 
 
-def getATHDataTopCoins(cmc_data, numberofcoins=200):
+def getATHDataTopCoins(cmc_data, numberofcoins=100):
     base_url = 'https://athcoinindex.com/price/page/'
     amount_of_pages = int(numberofcoins / 50)
     main_dictionary_list = []
@@ -500,7 +500,7 @@ def addSymbolToATHData(ath_data, cmc_data):
 
 def refreshATHData():
     global ATHData
-    ATHData = getATHDataTopCoins(CMCData, 200)
+    ATHData = getATHDataTopCoins(CMCData)
     
     
 
