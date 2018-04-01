@@ -819,7 +819,7 @@ def handle_messages():
 
 
                     # x coinName to usd, x coinName1 to coinName 2
-                    elif (isFloat(sliceWords(message_text, 0, 1)) or isInt(
+                    if (isFloat(sliceWords(message_text, 0, 1)) or isInt(
                             sliceWords(message_text, 0, 1))) and sliceWords(message_text, 2, 3) in ["to", "in"]:
 
                         if sliceWords(message_text, 3, 4) in ['usd', 'USD']:
